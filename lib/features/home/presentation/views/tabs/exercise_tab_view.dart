@@ -1,151 +1,234 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ExerciseTabView extends StatelessWidget {
+import '../../../../../core/constants/app_colors.dart';
+import '../../controllers/exercise_tab_controller.dart';
+
+class ExerciseTabView extends GetView<ExerciseTabController> {
   const ExerciseTabView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Get.put(ExerciseTabController());
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Exercises',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black,
-                  letterSpacing: -1.0,
-                ),
+      backgroundColor: AppColors.background,
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            pinned: true,
+            backgroundColor: AppColors.black,
+            elevation: 0,
+            toolbarHeight: 60,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: Text(
+              'EXERCISES',
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.5,
               ),
-              const SizedBox(height: 24),
-              // Search Bar Placeholder
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.search, color: Colors.grey),
-                    SizedBox(width: 12),
-                    Text(
-                      'Search exercises...',
-                      style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildCategoryPill('All', true),
-                    _buildCategoryPill('Chest', false),
-                    _buildCategoryPill('Back', false),
-                    _buildCategoryPill('Legs', false),
-                    _buildCategoryPill('Core', false),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              _buildExerciseItem('Barbell Bench Press', 'Chest, Triceps', 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=200&q=80'),
-              const SizedBox(height: 16),
-              _buildExerciseItem('Deadlift', 'Back, Hamstrings', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80'),
-              const SizedBox(height: 16),
-              _buildExerciseItem('Squat', 'Quads, Glutes', 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=200&q=80'),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryPill(String name, bool isSelected) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.black : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: isSelected ? null : Border.all(color: Colors.grey[300]!),
-      ),
-      child: Text(
-        name,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExerciseItem(String name, String target, String imageUrl) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              imageUrl,
-              width: 72,
-              height: 72,
-              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
+          SliverToBoxAdapter(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  target,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                Container(
+                  width: double.infinity,
+                  color: AppColors.black,
+                  child: Container(
+                    height: 220,
+                    padding: const EdgeInsets.only(left: 24, right: 24),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 12,),
+                        const Text(
+                          'Exercise Library',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            height: 1.2,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'YOU CAN FIND ALL EXERCISE HERE',
+                          style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 1.5),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        // Search Bar Pill
+                        Container(
+                          height: 48,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search, color: Colors.grey[600]),
+                              const SizedBox(width: 8),
+                              const Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Search Exercises',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Filter Button Pill
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.tune,
+                              color: AppColors.white,
+                              size: 20,
+                            ),
+                            label: const Text(
+                              'Filter & Sort',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.black,
+                              foregroundColor: AppColors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                                side: const BorderSide(
+                                  color: AppColors.white,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Spacer()
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.more_horiz, color: Colors.grey),
+          SliverToBoxAdapter(
+            child: Obx(() {
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 24,
+                  bottom: 120,
+                ),
+                itemCount: controller.exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = controller.exercises[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      border: Border.all(color: Colors.grey[300]!, width: 1),
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        // Square image with rounded corners
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: Image.network(
+                            exercise.imageUrl,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Title
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                exercise.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: AppColors.black,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Target Muscle Group',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Outline Play Button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.black,
+                              width: 2,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow,
+                            color: AppColors.black,
+                            size: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
         ],
       ),
     );

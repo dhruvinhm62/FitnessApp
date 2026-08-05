@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/routes/app_routes.dart';
+import '../../../../../core/constants/app_colors.dart';
 
 class ProfileTabView extends StatelessWidget {
   const ProfileTabView({super.key});
@@ -8,157 +9,218 @@ class ProfileTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 120),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 24),
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 4),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                  image: const DecorationImage(
-                    image: NetworkImage('https://i.pravatar.cc/300?img=11'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+      backgroundColor: AppColors.background,
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            pinned: true,
+            backgroundColor: AppColors.black,
+            elevation: 0,
+            toolbarHeight: 60,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: Text(
+              'PROFILE',
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.5,
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Alex Athlete',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.black,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'alex@athlete.com',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildStatCard('Weight', '175 lbs'),
-                  const SizedBox(width: 16),
-                  _buildStatCard('Height', '5\'10"'),
-                ],
-              ),
-              const SizedBox(height: 48),
-              _buildSettingsRow(Icons.person_outline, 'Edit Profile'),
-              _buildSettingsRow(Icons.notifications_none, 'Notifications'),
-              _buildSettingsRow(Icons.privacy_tip_outlined, 'Privacy Policy'),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {
-                    // Navigate back to Login Screen
-                    Get.offAllNamed(Routes.login);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Colors.redAccent, width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Text(
-                    'LOGOUT',
-                    style: TextStyle(
-                      color: Colors.redAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _buildHeader(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 24,
+                    bottom: 120,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildSettingsGroup([
+                        _buildGroupItem(
+                          icon: Icons.person_outline,
+                          title: 'My profile',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.settings_outlined,
+                          title: 'Setting',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.star_border,
+                          title: 'Subscription',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.language,
+                          title: 'Language',
+                          isLast: true,
+                        ),
+                      ]),
+                      _buildSettingsGroup([
+                        _buildGroupItem(
+                          icon: Icons.bug_report_outlined,
+                          title: 'Beta: report a bug',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.help_outline,
+                          title: 'Support',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.description_outlined,
+                          title: 'Term of use',
+                          isLast: false,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.privacy_tip_outlined,
+                          title: 'Privacy policy',
+                          isLast: true,
+                        ),
+                      ]),
+                      _buildSettingsGroup([
+                        _buildGroupItem(
+                          icon: Icons.delete_outline,
+                          title: 'Delete account',
+                          isLast: false,
+                          isDestructive: true,
+                        ),
+                        _buildGroupItem(
+                          icon: Icons.logout,
+                          title: 'Log out',
+                          isLast: true,
+                          isDestructive: true,
+                          onTap: () => Get.offAllNamed(Routes.login),
+                        ),
+                      ], bottomPadding: 16),
+                      const Text(
+                        'Version 1.0.0',
+                        style: TextStyle(
+                          color: AppColors.grey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      color: AppColors.black,
+      child: Container(
+        height: 220,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.white, width: 2),
+                image: const DecorationImage(
+                  image: NetworkImage('https://i.pravatar.cc/300?img=11'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Alex Athlete',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                color: AppColors.white,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'alex@athlete.com',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white70,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildStatCard(String label, String value) {
+  Widget _buildSettingsGroup(
+    List<Widget> children, {
+    double bottomPadding = 26,
+  }) {
     return Container(
-      width: 110,
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: bottomPadding),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: AppColors.white,
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: BorderRadius.circular(4),
       ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _buildGroupItem({
+    required IconData icon,
+    required String title,
+    required bool isLast,
+    bool isDestructive = false,
+    VoidCallback? onTap,
+  }) {
+    final color = isDestructive ? Colors.redAccent : AppColors.black;
+    return InkWell(
+      onTap: onTap ?? () {},
+      borderRadius: BorderRadius.circular(4),
       child: Column(
         children: [
-          Text(
-            value,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              children: [
+                Icon(icon, color: color, size: 24),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: color,
+                    ),
+                  ),
+                ),
+                if (!isDestructive)
+                  const Icon(Icons.chevron_right, color: AppColors.grey),
+              ],
+            ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(fontSize: 13, color: Colors.grey[500], fontWeight: FontWeight.w600),
-          ),
+          if (!isLast)
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsRow(IconData icon, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.black87),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black87),
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
-        ),
       ),
     );
   }

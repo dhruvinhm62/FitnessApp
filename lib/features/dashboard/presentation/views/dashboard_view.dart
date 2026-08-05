@@ -16,12 +16,12 @@ class DashboardView extends GetView<DashboardController> {
       extendBody: true, // allows the body to go behind the floating bar
       body: Obx(() => IndexedStack(
             index: controller.currentTab.value,
-            children: const [
-              HomeView(),
+            children: [
+              const HomeView(),
               WorkoutTabView(),
-              ExerciseTabView(),
-              StatisticsTabView(),
-              ProfileTabView(),
+              const ExerciseTabView(),
+              const StatisticsTabView(),
+              const ProfileTabView(),
             ],
           )),
       bottomNavigationBar: SafeArea(
@@ -59,9 +59,9 @@ class DashboardView extends GetView<DashboardController> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white.withOpacity(0.15) : Colors.transparent,
+          color: isSelected ? Colors.white.withValues(alpha: 0.15) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -70,20 +70,20 @@ class DashboardView extends GetView<DashboardController> {
             Icon(
               isSelected ? activeIcon : icon,
               color: isSelected ? Colors.white : Colors.grey[400],
-              size: 26,
+              size: 24,
             ),
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
               child: isSelected
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.only(left: 6.0),
                       child: Text(
                         label,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                     )
