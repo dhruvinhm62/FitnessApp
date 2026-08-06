@@ -41,18 +41,21 @@ class ProfileTabView extends StatelessWidget {
                     bottom: 120,
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildSectionLabel('Account Settings'),
                       _buildSettingsGroup([
                         _buildGroupItem(
                           icon: Icons.person_outline,
                           title: 'My profile',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.myProfile),
                         ),
                         _buildGroupItem(
                           icon: Icons.settings_outlined,
                           title: 'Setting',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.settings),
                         ),
                         _buildGroupItem(
                           icon: Icons.star_border,
@@ -63,13 +66,16 @@ class ProfileTabView extends StatelessWidget {
                           icon: Icons.language,
                           title: 'Language',
                           isLast: true,
+                          onTap: () => Get.toNamed(Routes.language),
                         ),
                       ]),
+                      _buildSectionLabel('Support & About'),
                       _buildSettingsGroup([
                         _buildGroupItem(
                           icon: Icons.bug_report_outlined,
                           title: 'Beta: report a bug',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.reportBug),
                         ),
                         _buildGroupItem(
                           icon: Icons.help_outline,
@@ -87,6 +93,7 @@ class ProfileTabView extends StatelessWidget {
                           isLast: true,
                         ),
                       ]),
+                      _buildSectionLabel('Account Actions'),
                       _buildSettingsGroup([
                         _buildGroupItem(
                           icon: Icons.delete_outline,
@@ -102,15 +109,17 @@ class ProfileTabView extends StatelessWidget {
                           onTap: () => Get.offAllNamed(Routes.login),
                         ),
                       ], bottomPadding: 16),
-                      const Text(
-                        'Version 1.0.0',
-                        style: TextStyle(
-                          color: AppColors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      const Center(
+                        child: Text(
+                          'Version 1.0.0',
+                          style: TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -118,6 +127,21 @@ class ProfileTabView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        text.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.2,
+          color: Colors.grey,
+        ),
       ),
     );
   }

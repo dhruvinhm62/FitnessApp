@@ -30,7 +30,7 @@ class DashboardView extends GetView<DashboardController> {
           child: Container(
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Obx(() => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
@@ -62,7 +62,7 @@ class DashboardView extends GetView<DashboardController> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? Colors.white.withValues(alpha: 0.15) : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

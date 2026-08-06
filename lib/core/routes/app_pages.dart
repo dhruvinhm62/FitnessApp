@@ -23,6 +23,13 @@ import '../../features/onboarding/presentation/views/step4_weight_view.dart';
 import '../../features/onboarding/presentation/views/step5_experience_view.dart';
 import '../../features/onboarding/presentation/views/step6_workout_type_view.dart';
 import '../../features/onboarding/presentation/views/step7_workout_days_view.dart';
+import '../../features/home/presentation/views/my_profile_view.dart';
+import '../../features/settings/presentation/views/settings_view.dart';
+import '../../features/settings/presentation/bindings/settings_binding.dart';
+import '../../features/language/presentation/views/language_view.dart';
+import '../../features/language/presentation/bindings/language_binding.dart';
+import '../../features/support/presentation/views/report_bug_view.dart';
+import '../../features/support/presentation/bindings/report_bug_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -110,6 +117,25 @@ class AppPages {
         Get.lazyPut<DashboardController>(() => DashboardController());
         Get.lazyPut<HomeController>(() => HomeController());
       }),
+    ),
+    GetPage(
+      name: Routes.myProfile,
+      page: () => const MyProfileView(),
+    ),
+    GetPage(
+      name: Routes.settings,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: Routes.language,
+      page: () => const LanguageView(),
+      binding: LanguageBinding(),
+    ),
+    GetPage(
+      name: Routes.reportBug,
+      page: () => const ReportBugView(),
+      binding: ReportBugBinding(),
     ),
   ];
 }

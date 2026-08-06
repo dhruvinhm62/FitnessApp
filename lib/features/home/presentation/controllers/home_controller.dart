@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
+enum TimeFilterMode { weekly, monthly, yearly, allTime }
+
 class StreakDay {
   final String day;
   final int date;
@@ -17,6 +19,34 @@ class MemberSpotlight {
   final String afterImageUrl;
 
   MemberSpotlight({required this.name, required this.beforeImageUrl, required this.afterImageUrl});
+}
+
+class ChartFilterState {
+  final filterMode = TimeFilterMode.weekly.obs;
+  final selectedMonth = DateTime.now().month.obs;
+  final selectedWeekNumber = 3.obs;
+  final selectedYear = DateTime.now().year.obs;
+
+  String get formattedFilterText {
+    switch (filterMode.value) {
+      case TimeFilterMode.weekly:
+        final monthName = _getMonthName(selectedMonth.value);
+        return 'Week ${selectedWeekNumber.value}, $monthName ${selectedYear.value}';
+      case TimeFilterMode.monthly:
+        final monthName = _getMonthName(selectedMonth.value);
+        return '$monthName ${selectedYear.value}';
+      case TimeFilterMode.yearly:
+        return '${selectedYear.value}';
+      case TimeFilterMode.allTime:
+        return 'All Time';
+    }
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    if (month >= 1 && month <= 12) return months[month - 1];
+    return '';
+  }
 }
 
 class HomeController extends GetxController {
@@ -63,4 +93,10 @@ class HomeController extends GetxController {
   final weightProgress = (-2.5).obs;
   final waterIntake = 1.5.obs;
   final waterGoal = 3.0.obs;
+
+  // Statistics Filters
+  final activityFilter = ChartFilterState();
+  final topExercisesFilter = ChartFilterState();
+  final waterFilter = ChartFilterState();
+  final weightFilter = ChartFilterState();
 }

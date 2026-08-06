@@ -72,7 +72,7 @@ class Step6WorkoutTypeView extends GetView<OnboardingController> {
               color: isSelected ? Colors.black : Colors.grey[400]!,
               width: isSelected ? 2 : 1,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

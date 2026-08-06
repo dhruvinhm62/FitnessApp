@@ -13,4 +13,9 @@ abstract class Routes {
   static const onboardingStep6 = '/onboarding-step6';
   static const onboardingStep7 = '/onboarding-step7';
   static const dashboard = '/dashboard';
+  static const myProfile = '/my-profile';
+  static const statistics = '/statistics';
+  static const settings = '/settings';
+  static const language = '/language';
+  static const reportBug = '/report-bug';
 }
