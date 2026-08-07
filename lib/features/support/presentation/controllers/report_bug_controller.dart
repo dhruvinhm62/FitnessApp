@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fitness_app/core/constants/app_colors.dart';
+import '../../../../core/utils/snackbar_util.dart';
 
 class ReportBugController extends GetxController {
   final detailsController = TextEditingController();
@@ -62,14 +63,9 @@ class ReportBugController extends GetxController {
 
   void submitBugReport() {
     // Mock submission
-    Get.snackbar(
-      'Success',
-      'Bug report submitted successfully.',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: AppColors.black,
-      colorText: AppColors.white,
-      margin: const EdgeInsets.all(20),
-      borderRadius: 4,
+    SnackbarUtil.showSuccess(
+      title: 'Success',
+      message: 'Bug report submitted successfully.',
     );
     Future.delayed(const Duration(seconds: 1), () {
       Get.back();

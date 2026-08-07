@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Exercise {
@@ -18,6 +19,14 @@ class ExerciseTabController extends GetxController {
   final filters = ['All', 'Chest', 'Back', 'Legs', 'Core'].obs;
 
   final exercises = <Exercise>[].obs;
+  final allExercises = <Exercise>[];
+  final searchController = TextEditingController();
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
+  }
 
   @override
   void onInit() {
@@ -100,14 +109,34 @@ class ExerciseTabController extends GetxController {
       );
     }
 
-    exercises.value = dummyExercises;
+    allExercises.addAll(dummyExercises);
+    _applyFilters();
   }
 
   void updateSearch(String query) {
     searchQuery.value = query;
+    _applyFilters();
+  }
+
+  void clearSearch() {
+    searchController.clear();
+    updateSearch('');
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   void selectFilter(String filter) {
     selectedFilter.value = filter;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    final query = searchQuery.value.toLowerCase().trim();
+    if (query.isEmpty) {
+      exercises.value = allExercises;
+    } else {
+      exercises.value = allExercises.where((exercise) {
+        return exercise.name.toLowerCase().contains(query);
+      }).toList();
+    }
   }
 }

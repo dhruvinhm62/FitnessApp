@@ -22,4 +22,5 @@ abstract class Routes {
   static const termsOfUse = '/terms-of-use';
   static const privacyPolicy = '/privacy-policy';
   static const subscription = '/subscription';
+  static const exerciseDetails = '/exercise-details';
 }

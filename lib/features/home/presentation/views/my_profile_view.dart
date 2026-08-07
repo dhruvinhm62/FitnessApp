@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../onboarding/presentation/widgets/custom_date_picker.dart';
 import '../../../onboarding/presentation/widgets/horizontal_ruler_slider.dart';
 
@@ -467,8 +468,10 @@ class _MyProfileViewState extends State<MyProfileView> {
           child: ElevatedButton(
             onPressed: () {
               Get.back();
-              Get.snackbar('Success', 'Profile updated successfully',
-                  snackPosition: SnackPosition.BOTTOM);
+              SnackbarUtil.showSuccess(
+                title: 'Success',
+                message: 'Profile updated successfully',
+              );
             },
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),

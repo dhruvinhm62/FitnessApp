@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/utils/snackbar_util.dart';
 
 class SupportController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -31,12 +32,9 @@ class SupportController extends GetxController {
   void submitMessage() {
     if (formKey.currentState!.validate()) {
       // Simulate submission
-      Get.snackbar(
-        'Message Sent',
-        'We have received your message and will get back to you within 24 hours.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+      SnackbarUtil.showSuccess(
+        title: 'Message Sent',
+        message: 'We have received your message and will get back to you within 24 hours.',
       );
       
       // Clear form

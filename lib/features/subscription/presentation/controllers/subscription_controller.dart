@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../../core/utils/snackbar_util.dart';
 
 class SubscriptionController extends GetxController {
   // 0: 1 Month, 1: 6 Months, 2: 12 Months
@@ -15,10 +16,9 @@ class SubscriptionController extends GetxController {
       else if (selectedPlanIndex.value == 1) planName = '6 Months';
       else if (selectedPlanIndex.value == 2) planName = '12 Months';
       
-      Get.snackbar(
-        'Subscription',
-        'Successfully subscribed to $planName plan!',
-        snackPosition: SnackPosition.BOTTOM,
+      SnackbarUtil.showSuccess(
+        title: 'Subscription',
+        message: 'Successfully subscribed to $planName plan!',
       );
     }
   }

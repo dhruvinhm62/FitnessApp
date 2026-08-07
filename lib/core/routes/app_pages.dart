@@ -36,6 +36,8 @@ import '../../features/legal/presentation/views/term_of_use_view.dart';
 import '../../features/legal/presentation/views/privacy_policy_view.dart';
 import '../../features/subscription/presentation/views/subscription_view.dart';
 import '../../features/subscription/presentation/bindings/subscription_binding.dart';
+import '../../features/exercise_details/presentation/views/exercise_details_view.dart';
+import '../../features/exercise_details/presentation/bindings/exercise_details_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -160,6 +162,11 @@ class AppPages {
       name: Routes.subscription,
       page: () => const SubscriptionView(),
       binding: SubscriptionBinding(),
+    ),
+    GetPage(
+      name: Routes.exerciseDetails,
+      page: () => const ExerciseDetailsView(),
+      binding: ExerciseDetailsBinding(),
     ),
   ];
 }

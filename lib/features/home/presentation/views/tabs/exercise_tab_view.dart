@@ -84,9 +84,11 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
                             children: [
                               Icon(Icons.search, color: Colors.grey[600]),
                               const SizedBox(width: 8),
-                              const Expanded(
+                              Expanded(
                                 child: TextField(
-                                  decoration: InputDecoration(
+                                  controller: controller.searchController,
+                                  onChanged: controller.updateSearch,
+                                  decoration: const InputDecoration(
                                     hintText: 'Search Exercises',
                                     hintStyle: TextStyle(
                                       color: Colors.grey,
@@ -100,6 +102,15 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
                                   ),
                                 ),
                               ),
+                              Obx(() {
+                                if (controller.searchQuery.value.isNotEmpty) {
+                                  return GestureDetector(
+                                    onTap: controller.clearSearch,
+                                    child: Icon(Icons.close, color: Colors.grey[600], size: 20),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              }),
                             ],
                           ),
                         ),
@@ -146,6 +157,38 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
           ),
           SliverToBoxAdapter(
             child: Obx(() {
+              if (controller.exercises.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 165),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search_off, size: 64, color: Colors.grey[300]),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No exercise found',
+                          style: TextStyle(
+                            color: AppColors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Try adjusting your search or filters.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -158,22 +201,26 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
                 itemCount: controller.exercises.length,
                 itemBuilder: (context, index) {
                   final exercise = controller.exercises[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      border: Border.all(color: Colors.grey[300]!, width: 1),
-                      borderRadius: BorderRadius.circular(4),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
+                  return GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/exercise-details', arguments: exercise);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        border: Border.all(color: Colors.grey[300]!, width: 1),
+                        borderRadius: BorderRadius.circular(4),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
                       children: [
                         // Square image with rounded corners
                         ClipRRect(
@@ -233,7 +280,7 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
                         ),
                       ],
                     ),
-                  );
+                  ));
                 },
               );
             }),
