@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/routes/app_routes.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 
 class ProfileTabView extends StatelessWidget {
   const ProfileTabView({super.key});
@@ -12,13 +13,21 @@ class ProfileTabView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.black,
             elevation: 0,
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+              onPressed: () {
+                if (Get.isRegistered<DashboardController>()) {
+                  Get.find<DashboardController>().changeTab(0);
+                }
+              },
+            ),
             title: Text(
               'PROFILE',
               style: TextStyle(
@@ -61,6 +70,7 @@ class ProfileTabView extends StatelessWidget {
                           icon: Icons.star_border,
                           title: 'Subscription',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.subscription),
                         ),
                         _buildGroupItem(
                           icon: Icons.language,
@@ -81,16 +91,19 @@ class ProfileTabView extends StatelessWidget {
                           icon: Icons.help_outline,
                           title: 'Support',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.support),
                         ),
                         _buildGroupItem(
                           icon: Icons.description_outlined,
                           title: 'Term of use',
                           isLast: false,
+                          onTap: () => Get.toNamed(Routes.termsOfUse),
                         ),
                         _buildGroupItem(
                           icon: Icons.privacy_tip_outlined,
                           title: 'Privacy policy',
                           isLast: true,
+                          onTap: () => Get.toNamed(Routes.privacyPolicy),
                         ),
                       ]),
                       _buildSectionLabel('Account Actions'),

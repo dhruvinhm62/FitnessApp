@@ -18,4 +18,8 @@ abstract class Routes {
   static const settings = '/settings';
   static const language = '/language';
   static const reportBug = '/report-bug';
+  static const support = '/support';
+  static const termsOfUse = '/terms-of-use';
+  static const privacyPolicy = '/privacy-policy';
+  static const subscription = '/subscription';
 }

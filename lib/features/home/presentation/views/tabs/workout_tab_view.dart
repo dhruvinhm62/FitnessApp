@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/workout_tab_controller.dart';
 
 class WorkoutHeaderClipper extends CustomClipper<Path> {
@@ -47,9 +48,13 @@ class WorkoutTabView extends StatelessWidget {
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
-            leading: const Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Icon(Icons.calendar_today_outlined, color: AppColors.white),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+              onPressed: () {
+                if (Get.isRegistered<DashboardController>()) {
+                  Get.find<DashboardController>().changeTab(0);
+                }
+              },
             ),
             title: const Text(
               'WORKOUT',

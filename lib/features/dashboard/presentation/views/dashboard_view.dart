@@ -12,8 +12,16 @@ class DashboardView extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true, // allows the body to go behind the floating bar
+    return WillPopScope(
+      onWillPop: () async {
+        if (controller.currentTab.value != 0) {
+          controller.changeTab(0);
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        extendBody: true, // allows the body to go behind the floating bar
       body: Obx(() => IndexedStack(
             index: controller.currentTab.value,
             children: [
@@ -48,8 +56,9 @@ class DashboardView extends GetView<DashboardController> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildNavItem(IconData icon, IconData activeIcon, String label, int index) {
     bool isSelected = controller.currentTab.value == index;

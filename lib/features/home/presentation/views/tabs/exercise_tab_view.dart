@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/exercise_tab_controller.dart';
 
 class ExerciseTabView extends GetView<ExerciseTabController> {
@@ -15,13 +16,21 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.black,
             elevation: 0,
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+              onPressed: () {
+                if (Get.isRegistered<DashboardController>()) {
+                  Get.find<DashboardController>().changeTab(0);
+                }
+              },
+            ),
             title: Text(
               'EXERCISES',
               style: TextStyle(

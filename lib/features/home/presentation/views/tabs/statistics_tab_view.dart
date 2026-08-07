@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
+import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/home_controller.dart';
 
 class StatisticsTabView extends StatelessWidget {
@@ -19,13 +20,21 @@ class StatisticsTabView extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.black,
             elevation: 0,
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+              onPressed: () {
+                if (Get.isRegistered<DashboardController>()) {
+                  Get.find<DashboardController>().changeTab(0);
+                }
+              },
+            ),
             title: Text(
               'STATISTICS',
               style: TextStyle(

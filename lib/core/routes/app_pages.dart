@@ -30,6 +30,12 @@ import '../../features/language/presentation/views/language_view.dart';
 import '../../features/language/presentation/bindings/language_binding.dart';
 import '../../features/support/presentation/views/report_bug_view.dart';
 import '../../features/support/presentation/bindings/report_bug_binding.dart';
+import '../../features/support/presentation/views/support_view.dart';
+import '../../features/support/presentation/bindings/support_binding.dart';
+import '../../features/legal/presentation/views/term_of_use_view.dart';
+import '../../features/legal/presentation/views/privacy_policy_view.dart';
+import '../../features/subscription/presentation/views/subscription_view.dart';
+import '../../features/subscription/presentation/bindings/subscription_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -136,6 +142,24 @@ class AppPages {
       name: Routes.reportBug,
       page: () => const ReportBugView(),
       binding: ReportBugBinding(),
+    ),
+    GetPage(
+      name: Routes.support,
+      page: () => const SupportView(),
+      binding: SupportBinding(),
+    ),
+    GetPage(
+      name: Routes.termsOfUse,
+      page: () => const TermOfUseView(),
+    ),
+    GetPage(
+      name: Routes.privacyPolicy,
+      page: () => const PrivacyPolicyView(),
+    ),
+    GetPage(
+      name: Routes.subscription,
+      page: () => const SubscriptionView(),
+      binding: SubscriptionBinding(),
     ),
   ];
 }

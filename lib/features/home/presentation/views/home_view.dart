@@ -19,7 +19,7 @@ class HomeView extends GetView<HomeController> {
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
