@@ -63,7 +63,7 @@ class Step4WeightView extends GetView<OnboardingController> {
                         child: Text('NEXT'),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),

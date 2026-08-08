@@ -39,7 +39,7 @@ class Step5ExperienceView extends GetView<OnboardingController> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 8),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

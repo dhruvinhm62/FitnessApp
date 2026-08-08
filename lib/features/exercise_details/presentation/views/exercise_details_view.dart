@@ -67,7 +67,8 @@ class _InstructionsTab extends GetView<ExerciseDetailsController> {
             child: Container(
               color: AppColors.black,
               child: Obx(() {
-                if (controller.isVideoInitialized.value && controller.chewieController != null) {
+                if (controller.isVideoInitialized.value &&
+                    controller.chewieController != null) {
                   return _CustomVideoPlayer(
                     chewieController: controller.chewieController!,
                   );
@@ -91,7 +92,9 @@ class _InstructionsTab extends GetView<ExerciseDetailsController> {
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(4),
-                    border: const Border(left: BorderSide(color: AppColors.black, width: 4)),
+                    border: const Border(
+                      left: BorderSide(color: AppColors.black, width: 4),
+                    ),
                   ),
                   child: Text(
                     controller.exercise.name,
@@ -142,6 +145,7 @@ class _InstructionsTab extends GetView<ExerciseDetailsController> {
               ],
             ),
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -278,7 +282,9 @@ class _DetailsTab extends GetView<ExerciseDetailsController> {
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(4),
-              border: const Border(left: BorderSide(color: AppColors.black, width: 4)),
+              border: const Border(
+                left: BorderSide(color: AppColors.black, width: 4),
+              ),
             ),
             child: Text(
               controller.exercise.name,
@@ -354,6 +360,7 @@ class _DetailsTab extends GetView<ExerciseDetailsController> {
             '60s',
             'Rest for 60 seconds between sets to allow muscle recovery.',
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -527,7 +534,7 @@ class _NotesTab extends GetView<ExerciseDetailsController> {
             );
           }
           return ListView.separated(
-            padding: const EdgeInsets.all(20).copyWith(bottom: 80),
+            padding: const EdgeInsets.all(20).copyWith(bottom: 100),
             itemCount: controller.notes.length,
             separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
@@ -676,9 +683,9 @@ class _CustomVideoPlayer extends StatefulWidget {
 class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
   bool _showControls = true;
   Timer? _hideTimer;
-  bool _isFullscreen = false;
 
-  VideoPlayerController get _controller => widget.chewieController.videoPlayerController;
+  VideoPlayerController get _controller =>
+      widget.chewieController.videoPlayerController;
 
   @override
   void initState() {
@@ -697,7 +704,7 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
     _hideTimer?.cancel();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
+      DeviceOrientation.portraitDown,
     ]);
     super.dispose();
   }
@@ -789,19 +796,29 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.replay_10, color: AppColors.white, size: 40),
+                          icon: const Icon(
+                            Icons.replay_10,
+                            color: AppColors.white,
+                            size: 40,
+                          ),
                           onPressed: _showControls ? () => _skip(-10) : null,
                         ),
                         IconButton(
                           icon: Icon(
-                            _controller.value.isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                            _controller.value.isPlaying
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_filled,
                             color: AppColors.white,
                             size: 60,
                           ),
                           onPressed: _showControls ? _togglePlay : null,
                         ),
                         IconButton(
-                          icon: const Icon(Icons.forward_10, color: AppColors.white, size: 40),
+                          icon: const Icon(
+                            Icons.forward_10,
+                            color: AppColors.white,
+                            size: 40,
+                          ),
                           onPressed: _showControls ? () => _skip(10) : null,
                         ),
                       ],
@@ -818,7 +835,9 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
                             const Spacer(),
                             IconButton(
                               icon: Icon(
-                                _controller.value.volume == 0 ? Icons.volume_off : Icons.volume_up,
+                                _controller.value.volume == 0
+                                    ? Icons.volume_off
+                                    : Icons.volume_up,
                                 color: AppColors.white,
                                 size: 28,
                               ),
@@ -832,7 +851,9 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
                               child: VideoProgressIndicator(
                                 _controller,
                                 allowScrubbing: true,
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0,
+                                ),
                                 colors: const VideoProgressColors(
                                   playedColor: AppColors.white,
                                   bufferedColor: Colors.white24,
@@ -843,11 +864,15 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
                             const SizedBox(width: 8),
                             IconButton(
                               icon: Icon(
-                                widget.isFullScreenRoute ? Icons.fullscreen_exit : Icons.fullscreen,
+                                widget.isFullScreenRoute
+                                    ? Icons.fullscreen_exit
+                                    : Icons.fullscreen,
                                 color: AppColors.white,
                                 size: 28,
                               ),
-                              onPressed: _showControls ? () => _toggleFullscreen(context) : null,
+                              onPressed: _showControls
+                                  ? () => _toggleFullscreen(context)
+                                  : null,
                             ),
                           ],
                         ),

@@ -205,7 +205,7 @@ class StatisticsTabView extends StatelessWidget {
                 top: 12,
                 left: 24,
                 right: 24,
-                bottom: MediaQuery.of(context).padding.bottom + 20,
+                bottom: MediaQuery.of(context).padding.bottom + 8,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

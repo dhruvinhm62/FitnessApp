@@ -287,7 +287,7 @@ class SubscriptionView extends GetView<SubscriptionController> {
 
   Widget _buildBottomSection() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

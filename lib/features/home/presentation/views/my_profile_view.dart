@@ -464,7 +464,7 @@ class _MyProfileViewState extends State<MyProfileView> {
       backgroundColor: AppColors.background,
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 8),
           child: ElevatedButton(
             onPressed: () {
               Get.back();

@@ -132,59 +132,59 @@ class WorkoutTabView extends StatelessWidget {
   Widget _buildCalendarStrip() {
     return SizedBox(
       height: 70,
-      child: Obx(() => ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: controller.calendarDates.length,
-        itemBuilder: (context, index) {
+      child: Obx(() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(controller.calendarDates.length, (index) {
           final dateData = controller.calendarDates[index];
           final isSelected = controller.selectedDateIndex.value == index;
-          return GestureDetector(
-            onTap: () => controller.selectDate(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 50,
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.white : Colors.transparent,
-                border: Border.all(color: AppColors.white, width: isSelected ? 0 : 1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    dateData['day']!,
-                    style: TextStyle(
-                      color: isSelected ? AppColors.black : AppColors.white.withOpacity(0.7),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    dateData['date']!,
-                    style: TextStyle(
-                      color: isSelected ? AppColors.black : AppColors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                    ),
-                  ),
-                  if (isSelected) ...[
-                    const SizedBox(height: 2),
-                    Container(
-                      width: 4,
-                      height: 4,
-                      decoration: const BoxDecoration(
-                        color: AppColors.black,
-                        shape: BoxShape.circle,
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => controller.selectDate(index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppColors.white : Colors.transparent,
+                  border: Border.all(color: AppColors.white, width: isSelected ? 0 : 1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      dateData['day']!,
+                      style: TextStyle(
+                        color: isSelected ? AppColors.black : AppColors.white.withOpacity(0.7),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      dateData['date']!,
+                      style: TextStyle(
+                        color: isSelected ? AppColors.black : AppColors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16,
+                      ),
+                    ),
+                    if (isSelected) ...[
+                      const SizedBox(height: 2),
+                      Container(
+                        width: 4,
+                        height: 4,
+                        decoration: const BoxDecoration(
+                          color: AppColors.black,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           );
-        },
+        }),
       )),
     );
   }

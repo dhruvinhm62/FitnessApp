@@ -34,14 +34,14 @@ class DashboardView extends GetView<DashboardController> {
           )),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Obx(() => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

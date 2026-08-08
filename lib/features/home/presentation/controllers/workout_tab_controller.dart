@@ -131,7 +131,7 @@ class WorkoutTabController extends GetxController {
   void showWorkoutSettings() {
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 8),
         decoration: const BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
