@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:math';
 
 class Exercise {
   final String id;
   final String name;
   final String imageUrl;
+  final String equipment;
+  final String difficulty;
+  final DateTime addedAt;
 
   Exercise({
     required this.id,
     required this.name,
     required this.imageUrl,
+    required this.equipment,
+    required this.difficulty,
+    required this.addedAt,
   });
 }
 
 class ExerciseTabController extends GetxController {
   final searchQuery = ''.obs;
-  final selectedFilter = 'All'.obs;
-  final filters = ['All', 'Chest', 'Back', 'Legs', 'Core'].obs;
+  
+  // Filter & Sort States
+  final sortBy = 'A-Z'.obs; // A-Z, Z-A, Newest added, Oldest added
+  final selectedEquipment = <String>[].obs;
+  final selectedDifficulty = <String>[].obs;
 
   final exercises = <Exercise>[].obs;
   final allExercises = <Exercise>[];
   final searchController = TextEditingController();
+
+  // Filter options available
+  final equipmentOptions = ['Barbell', 'Dumbbell', 'Machine', 'Bodyweight', 'Cable'];
+  final difficultyOptions = ['Beginner', 'Intermediate', 'Advanced'];
 
   @override
   void onClose() {
@@ -88,34 +102,41 @@ class ExerciseTabController extends GetxController {
       'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=200&q=80',
     ];
 
+    final random = Random(42); // Use a seed for consistent mock data
+
     for (int i = 0; i < titles.length; i++) {
       dummyExercises.add(
         Exercise(
           id: 'e$i',
           name: titles[i],
           imageUrl: images[i % images.length],
+          equipment: equipmentOptions[random.nextInt(equipmentOptions.length)],
+          difficulty: difficultyOptions[random.nextInt(difficultyOptions.length)],
+          addedAt: DateTime.now().subtract(Duration(days: random.nextInt(365))),
         ),
       );
     }
     
-    // Add a few more to reach exactly 45 exercises
     for (int i = 0; i < 5; i++) {
       dummyExercises.add(
         Exercise(
           id: 'e${titles.length + i}',
           name: 'Advanced ${titles[i]}',
           imageUrl: images[i % images.length],
+          equipment: equipmentOptions[random.nextInt(equipmentOptions.length)],
+          difficulty: difficultyOptions[random.nextInt(difficultyOptions.length)],
+          addedAt: DateTime.now().subtract(Duration(days: random.nextInt(365))),
         ),
       );
     }
 
     allExercises.addAll(dummyExercises);
-    _applyFilters();
+    applyFilters();
   }
 
   void updateSearch(String query) {
     searchQuery.value = query;
-    _applyFilters();
+    applyFilters();
   }
 
   void clearSearch() {
@@ -124,19 +145,58 @@ class ExerciseTabController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  void selectFilter(String filter) {
-    selectedFilter.value = filter;
-    _applyFilters();
+  void toggleEquipmentFilter(String equipment) {
+    if (selectedEquipment.contains(equipment)) {
+      selectedEquipment.remove(equipment);
+    } else {
+      selectedEquipment.add(equipment);
+    }
+    // We don't call applyFilters() automatically because user has to click "Apply now" in dialog
   }
 
-  void _applyFilters() {
-    final query = searchQuery.value.toLowerCase().trim();
-    if (query.isEmpty) {
-      exercises.value = allExercises;
+  void toggleDifficultyFilter(String difficulty) {
+    if (selectedDifficulty.contains(difficulty)) {
+      selectedDifficulty.remove(difficulty);
     } else {
-      exercises.value = allExercises.where((exercise) {
-        return exercise.name.toLowerCase().contains(query);
-      }).toList();
+      selectedDifficulty.add(difficulty);
     }
+    // We don't call applyFilters() automatically because user has to click "Apply now" in dialog
+  }
+
+  void setSortBy(String sort) {
+    sortBy.value = sort;
+    // We don't call applyFilters() automatically because user has to click "Apply now" in dialog
+  }
+
+  void applyFilters() {
+    final query = searchQuery.value.toLowerCase().trim();
+    List<Exercise> filtered = allExercises.where((exercise) {
+      // Search
+      if (query.isNotEmpty && !exercise.name.toLowerCase().contains(query)) {
+        return false;
+      }
+      // Equipment
+      if (selectedEquipment.isNotEmpty && !selectedEquipment.contains(exercise.equipment)) {
+        return false;
+      }
+      // Difficulty
+      if (selectedDifficulty.isNotEmpty && !selectedDifficulty.contains(exercise.difficulty)) {
+        return false;
+      }
+      return true;
+    }).toList();
+
+    // Sort
+    if (sortBy.value == 'A-Z') {
+      filtered.sort((a, b) => a.name.compareTo(b.name));
+    } else if (sortBy.value == 'Z-A') {
+      filtered.sort((a, b) => b.name.compareTo(a.name));
+    } else if (sortBy.value == 'Newest added') {
+      filtered.sort((a, b) => b.addedAt.compareTo(a.addedAt));
+    } else if (sortBy.value == 'Oldest added') {
+      filtered.sort((a, b) => a.addedAt.compareTo(b.addedAt));
+    }
+
+    exercises.value = filtered;
   }
 }

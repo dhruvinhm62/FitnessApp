@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/exercise_tab_controller.dart';
+import 'widgets/exercise_filter_dialog.dart';
 
 class ExerciseTabView extends GetView<ExerciseTabController> {
   const ExerciseTabView({super.key});
@@ -120,7 +121,9 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
                           width: double.infinity,
                           height: 48,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.dialog(const ExerciseFilterDialog(), useSafeArea: false);
+                            },
                             icon: const Icon(
                               Icons.tune,
                               color: AppColors.white,

@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/home_controller.dart';
+import '../../widgets/water_tracker_card.dart';
+import '../../../../weight_tracker/presentation/views/weight_tracker_view.dart';
 
 class StatisticsTabView extends StatelessWidget {
   const StatisticsTabView({super.key});
@@ -540,7 +542,9 @@ class StatisticsTabView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    child: Container(
+                    child: GestureDetector(
+                      onTap: () => Get.to(() => WeightTrackerView()),
+                      child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: AppColors.white,
@@ -576,12 +580,12 @@ class StatisticsTabView extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Icon(
-                                    Icons.add_circle_outline,
+                                const Text(
+                                  '7 Days',
+                                  style: TextStyle(
                                     color: AppColors.black,
-                                    size: 20,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
@@ -633,101 +637,10 @@ class StatisticsTabView extends StatelessWidget {
                       }),
                     ),
                   ),
+                  ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        border: Border.all(color: AppColors.black, width: 2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Obx(() {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.water_drop_outlined,
-                                      color: AppColors.black,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Water',
-                                      style: TextStyle(
-                                        color: AppColors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Icon(
-                                    Icons.add_circle_outline,
-                                    color: AppColors.black,
-                                    size: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  '${controller.waterIntake.value}',
-                                  style: const TextStyle(
-                                    color: AppColors.black,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                const Text(
-                                  'L',
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              height: 6,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.black,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: FractionallySizedBox(
-                                widthFactor:
-                                    (controller.waterIntake.value /
-                                            controller.waterGoal.value)
-                                        .clamp(0.0, 1.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.black,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
+                    child: WaterTrackerCard(controller: controller),
                   ),
                 ],
               ),

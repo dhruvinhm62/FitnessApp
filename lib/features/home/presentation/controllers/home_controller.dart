@@ -17,8 +17,14 @@ class MemberSpotlight {
   final String name;
   final String beforeImageUrl;
   final String afterImageUrl;
+  final String testimonial;
 
-  MemberSpotlight({required this.name, required this.beforeImageUrl, required this.afterImageUrl});
+  MemberSpotlight({
+    required this.name,
+    required this.beforeImageUrl,
+    required this.afterImageUrl,
+    required this.testimonial,
+  });
 }
 
 class ChartFilterState {
@@ -74,13 +80,21 @@ class HomeController extends GetxController {
   final spotlights = <MemberSpotlight>[
     MemberSpotlight(
       name: "Gillian Young",
-      beforeImageUrl: "https://via.placeholder.com/150",
-      afterImageUrl: "https://via.placeholder.com/150",
+      beforeImageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80",
+      afterImageUrl: "https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=400&q=80",
+      testimonial: "I'm so grateful to BBB! I lost my glutes after giving birth and it was really hard to get them back. I loved going from training five times a week to just three with the BBB program, with great tutorials and a program that keeps you learning and progressing steadily.",
     ),
     MemberSpotlight(
-      name: "Jessica Smith",
-      beforeImageUrl: "https://via.placeholder.com/150",
-      afterImageUrl: "https://via.placeholder.com/150",
+      name: "Renata Bommes",
+      beforeImageUrl: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80",
+      afterImageUrl: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80",
+      testimonial: "Nothing compares to the glute growth I've achieved with Booty by Bret. The improvements go beyond glute growth—my lifting technique has improved with support from the coaches, I can lift much heavier, feel stronger, and have more energy for all my activities. And, of course, I get extra motivation from the amazing BBB community on Facebook.",
+    ),
+    MemberSpotlight(
+      name: "Vivianna",
+      beforeImageUrl: "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&q=80",
+      afterImageUrl: "https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=400&q=80",
+      testimonial: "Bret's expertise in glute training is unparalleled. His programs are challenging yet achievable, and I love how they keep me motivated with fresh workouts every month. Booty By Bret has increased my overall strength which has benefited my aerial practice. The Facebook community is incredibly supportive, and the coaches' feedback is always helpful and constructive.",
     ),
   ].obs;
 

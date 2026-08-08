@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
+import 'tabs/workout_tab_view.dart';
+import 'tabs/statistics_tab_view.dart';
+import 'my_profile_view.dart';
+import 'member_spotlight_details_view.dart';
+import '../../../weight_tracker/presentation/views/weight_tracker_view.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../widgets/water_tracker_card.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -351,231 +357,129 @@ class HomeView extends GetView<HomeController> {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.black, width: 2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Obx(() {
-                    bool isPositive = controller.weightProgress.value < 0;
-                    IconData trendIcon = isPositive
-                        ? Icons.trending_down
-                        : Icons.trending_up;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.scale_outlined,
-                                  color: AppColors.black,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Weight',
-                                  style: TextStyle(
+                child: Obx(() {
+                  bool isPositive = controller.weightProgress.value < 0;
+                  IconData trendIcon = isPositive
+                      ? Icons.trending_down
+                      : Icons.trending_up;
+                  return GestureDetector(
+                    onTap: () => Get.to(() => WeightTrackerView()),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        border: Border.all(color: AppColors.black, width: 2),
+                        borderRadius: BorderRadius.circular(4),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: AppColors.black,
+                            offset: Offset(4, 4),
+                            blurRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.monitor_weight_outlined,
                                     color: AppColors.black,
-                                    fontWeight: FontWeight.bold,
+                                    size: 20,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '7 Days',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Weight',
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              '${controller.currentWeight.value}',
-                              style: const TextStyle(
-                                color: AppColors.black,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Text(
-                              'lbs',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  trendIcon,
+                              Text(
+                                '7 Days',
+                                style: TextStyle(
                                   color: AppColors.black,
-                                  size: 16,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${controller.weightProgress.value.abs()} lbs',
-                                  style: const TextStyle(
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(
+                                '${controller.currentWeight.value}',
+                                style: const TextStyle(
+                                  color: AppColors.black,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Text(
+                                'lbs',
+                                style: TextStyle(
+                                  color: AppColors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    trendIcon,
                                     color: AppColors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                                    size: 16,
                                   ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                _buildMiniBar(12),
-                                _buildMiniBar(16),
-                                _buildMiniBar(14),
-                                _buildMiniBar(20),
-                                _buildMiniBar(18),
-                                _buildMiniBar(24),
-                                _buildMiniBar(10, isToday: true),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  }),
-                ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${controller.weightProgress.value.abs()} lbs',
+                                    style: const TextStyle(
+                                      color: AppColors.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  _buildMiniBar(12),
+                                  _buildMiniBar(16),
+                                  _buildMiniBar(20),
+                                  _buildMiniBar(24),
+                                  _buildMiniBar(18),
+                                  _buildMiniBar(28),
+                                  _buildMiniBar(32, isToday: true),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.black, width: 2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Obx(
-                    () => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.water_drop_outlined,
-                                  color: AppColors.black,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Water',
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              'Today',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              '${controller.waterIntake.value}',
-                              style: const TextStyle(
-                                color: AppColors.black,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Text(
-                              'L',
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: AppColors.black,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: FractionallySizedBox(
-                            widthFactor:
-                                (controller.waterIntake.value /
-                                        controller.waterGoal.value)
-                                    .clamp(0.0, 1.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.black,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Goal: ${controller.waterGoal.value}L',
-                              style: const TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              '${(controller.waterGoal.value - controller.waterIntake.value).toStringAsFixed(1)}L left',
-                              style: const TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                child: WaterTrackerCard(controller: controller),
               ),
             ],
           ),
@@ -626,56 +530,81 @@ class HomeView extends GetView<HomeController> {
           child: Obx(
             () => ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
               itemCount: controller.spotlights.length,
               itemBuilder: (context, index) {
                 final spotlight = controller.spotlights[index];
-                return Container(
-                  width: 200,
-                  margin: const EdgeInsets.only(right: 16),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.black, width: 2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Icon(
-                        Icons.person_outline,
-                        size: 60,
-                        color: AppColors.black,
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            spotlight.name,
-                            style: const TextStyle(
-                              color: AppColors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.black,
-                              foregroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
+                
+                return GestureDetector(
+                  onTap: () => Get.to(() => MemberSpotlightDetailsView(spotlight: spotlight)),
+                  child: Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(right: 16),
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      border: Border.all(color: AppColors.black, width: 2),
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppColors.black,
+                          offset: Offset(4, 4),
+                          blurRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Image section
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Image.network(
+                                  spotlight.beforeImageUrl,
+                                  fit: BoxFit.cover,
+                                  height: double.infinity,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 8,
+                              Container(width: 2, color: AppColors.black),
+                              Expanded(
+                                child: Image.network(
+                                  spotlight.afterImageUrl,
+                                  fit: BoxFit.cover,
+                                  height: double.infinity,
+                                ),
                               ),
-                            ),
-                            child: const Text('Read More'),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        // Text section
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: const BoxDecoration(
+                            border: Border(top: BorderSide(color: AppColors.black, width: 2)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                spotlight.name,
+                                style: const TextStyle(
+                                  color: AppColors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: AppColors.black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

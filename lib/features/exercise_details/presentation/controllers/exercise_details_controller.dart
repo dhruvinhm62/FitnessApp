@@ -44,6 +44,9 @@ class ExerciseDetailsController extends GetxController {
         id: '0',
         name: 'Hanging Straight Leg Raise',
         imageUrl: 'https://via.placeholder.com/150',
+        equipment: 'Bodyweight',
+        difficulty: 'Advanced',
+        addedAt: DateTime.now(),
       );
     }
     _initializeVideo();

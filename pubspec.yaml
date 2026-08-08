@@ -41,6 +41,7 @@ dependencies:
   dotted_border: ^3.1.0
   video_player: ^2.11.1
   chewie: ^1.14.1
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:
