@@ -74,7 +74,6 @@ class WaterIntakeView extends StatelessWidget {
               const SizedBox(height: 32),
               _buildHistorySection(),
               _buildDrinkButton(context),
-              const SizedBox(height: 20),
             ],
           ),
         ),

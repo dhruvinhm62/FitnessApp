@@ -208,46 +208,6 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
           ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Program View',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.black,
-                    side: const BorderSide(color: AppColors.black, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Edit Program',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -478,9 +438,7 @@ class HomeView extends GetView<HomeController> {
                 }),
               ),
               const SizedBox(width: 16),
-              Expanded(
-                child: WaterTrackerCard(controller: controller),
-              ),
+              Expanded(child: WaterTrackerCard(controller: controller)),
             ],
           ),
         ],
@@ -534,9 +492,11 @@ class HomeView extends GetView<HomeController> {
               itemCount: controller.spotlights.length,
               itemBuilder: (context, index) {
                 final spotlight = controller.spotlights[index];
-                
+
                 return GestureDetector(
-                  onTap: () => Get.to(() => MemberSpotlightDetailsView(spotlight: spotlight)),
+                  onTap: () => Get.to(
+                    () => MemberSpotlightDetailsView(spotlight: spotlight),
+                  ),
                   child: Container(
                     width: 200,
                     margin: const EdgeInsets.only(right: 16),
@@ -582,7 +542,9 @@ class HomeView extends GetView<HomeController> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: const BoxDecoration(
-                            border: Border(top: BorderSide(color: AppColors.black, width: 2)),
+                            border: Border(
+                              top: BorderSide(color: AppColors.black, width: 2),
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

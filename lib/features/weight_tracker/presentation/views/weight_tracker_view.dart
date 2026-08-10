@@ -274,7 +274,7 @@ class WeightTrackerView extends StatelessWidget {
 
   Widget _buildLogButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 8),
+      padding: const EdgeInsets.only(left: 20, right: 20,  top: 8),
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
