@@ -128,6 +128,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_slidable",
+      "rootUri": "file:///Users/codeyance/.pub-cache/hosted/pub.dev/flutter_slidable-4.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/codeyance/Desktop/sdk/flutter/packages/flutter_test",
       "packageUri": "lib/",

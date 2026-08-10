@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../workout/presentation/views/workout_detail_view.dart';
 
 class WorkoutDay {
   final String id;
@@ -108,7 +109,7 @@ class WorkoutTabController extends GetxController {
         id: 'w$w',
         title: 'Week $w',
         days: weekDays,
-        isExpanded: w == 1,
+        isExpanded: false,
       ));
     }
     
@@ -122,6 +123,12 @@ class WorkoutTabController extends GetxController {
 
   void selectDate(int index) {
     selectedDateIndex.value = index;
+  }
+
+  void startWorkout(WorkoutDay day) {
+    if (!day.isRestDay) {
+      Get.to(() => WorkoutDetailView(workoutDay: day));
+    }
   }
 
   // Workout Settings

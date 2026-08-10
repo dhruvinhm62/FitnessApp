@@ -180,14 +180,7 @@ class DrinkLoggingView extends StatelessWidget {
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: Text(
-                          '+ DRINK',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
+                        child: Text('+ DRINK'),
                       ),
                     ),
                   ),

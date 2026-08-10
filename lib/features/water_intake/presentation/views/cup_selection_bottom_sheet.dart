@@ -120,14 +120,7 @@ class CupSelectionBottomSheet extends StatelessWidget {
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: const Text(
-                  'DONE',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.5,
-                  ),
-                ),
+                child: const Text('DONE'),
               ),
             ),
           ),
@@ -211,10 +204,7 @@ class CupSelectionBottomSheet extends StatelessWidget {
                         ),
                         child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Text(
-                            'CANCEL',
-                            style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.0),
-                          ),
+                          child: Text('CANCEL'),
                         ),
                       ),
                     ),
@@ -238,10 +228,7 @@ class CupSelectionBottomSheet extends StatelessWidget {
                         ),
                         child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Text(
-                            'SAVE',
-                            style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.0),
-                          ),
+                          child: Text('SAVE'),
                         ),
                       ),
                     ),

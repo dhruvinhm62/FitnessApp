@@ -695,7 +695,13 @@ class _CustomVideoPlayerState extends State<_CustomVideoPlayer> {
   }
 
   void _videoListener() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      final value = _controller.value;
+      if (value.position >= value.duration && value.duration > Duration.zero) {
+        _showControls = true;
+      }
+      setState(() {});
+    }
   }
 
   @override
