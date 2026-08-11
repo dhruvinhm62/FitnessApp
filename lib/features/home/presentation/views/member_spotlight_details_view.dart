@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import '../../../../core/constants/app_colors.dart';
 
@@ -14,12 +15,15 @@ class MemberSpotlightDetailsView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.white),
+          onPressed: () => Get.back(),
+        ),
         title: const Text(
           'MEMBER SPOTLIGHT',
           style: TextStyle(
             color: AppColors.white,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,
           ),

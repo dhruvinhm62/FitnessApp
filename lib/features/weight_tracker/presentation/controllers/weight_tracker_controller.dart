@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../home/presentation/controllers/home_controller.dart';
 
 class WeightLog {
   final double weight;
@@ -11,21 +12,15 @@ class WeightTrackerController extends GetxController {
   final RxDouble currentWeight = 154.0.obs;
   final RxDouble startWeight = 154.0.obs;
   final RxDouble goalWeight = 150.0.obs;
+  final Rx<DateTime> lastGoalUpdated = DateTime.now().obs;
   
+  final weightFilter = ChartFilterState();
+  final weightLineFilter = ChartFilterState();
+
   // History of logged weights
   final RxList<WeightLog> history = <WeightLog>[].obs;
   
-  @override
-  void onInit() {
-    super.onInit();
-    // Add some dummy history for the chart
-    history.add(WeightLog(weight: 154.0, timestamp: DateTime.now().subtract(const Duration(days: 7))));
-    history.add(WeightLog(weight: 155.2, timestamp: DateTime.now().subtract(const Duration(days: 6))));
-    history.add(WeightLog(weight: 154.8, timestamp: DateTime.now().subtract(const Duration(days: 5))));
-    history.add(WeightLog(weight: 153.5, timestamp: DateTime.now().subtract(const Duration(days: 4))));
-    history.add(WeightLog(weight: 153.0, timestamp: DateTime.now().subtract(const Duration(days: 2))));
-    history.add(WeightLog(weight: 154.0, timestamp: DateTime.now()));
-  }
+
 
   void logWeight(double weight) {
     currentWeight.value = weight;

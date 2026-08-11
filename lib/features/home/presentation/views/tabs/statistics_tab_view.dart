@@ -112,9 +112,9 @@ class StatisticsTabView extends StatelessWidget {
       case TimeFilterMode.weekly:
         return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       case TimeFilterMode.monthly:
-        return ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+        return ['Q1', 'Q2', 'Q3', 'Q4'];
       case TimeFilterMode.yearly:
-        return ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'];
+        return ['Q1', 'Q2', 'Q3', 'Q4'];
       case TimeFilterMode.allTime:
         return ['2023', '2024', '2025', '2026'];
     }
@@ -705,14 +705,56 @@ class StatisticsTabView extends StatelessWidget {
                             filterState.filterMode.value,
                           );
                           return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: List.generate(labels.length, (index) {
                               double factor1 = (math.sin(index) + 1.2) * 0.4;
                               double factor2 = (math.cos(index) + 1.2) * 0.4;
-                              return _buildActivityBar(
-                                factor1.clamp(0.1, 1.0),
-                                factor2.clamp(0.1, 1.0),
+                              double val1 = (factor1 * 10).roundToDouble();
+                              double val2 = (factor2 * 150).roundToDouble();
+
+                              final tooltipKey = GlobalKey<TooltipState>();
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    alignment: Alignment.bottomCenter,
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            _buildActivityBar(
+                                              factor1.clamp(0.1, 1.0),
+                                              factor2.clamp(0.1, 1.0),
+                                            ),
+                                          ],
+                                        ),
+                                        Tooltip(
+                                          key: tooltipKey,
+                                          message: 'Exercise: ${val1.toInt()}\nWeight: ${val2.toInt()} lbs',
+                                          triggerMode: TooltipTriggerMode.manual,
+                                          preferBelow: false,
+                                          verticalOffset: 10,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black87,
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          textStyle: const TextStyle(
+                                            color: AppColors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          child: const SizedBox(width: 4, height: 4),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               );
                             }),
                           );
@@ -725,19 +767,18 @@ class StatisticsTabView extends StatelessWidget {
                           filterState.filterMode.value,
                         );
                         return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: labels
-                              .map(
-                                (lbl) => Text(
-                                  lbl,
-                                  style: const TextStyle(
-                                    color: AppColors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: labels.map((lbl) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(lbl,
+                                    style: const TextStyle(
+                                        color: AppColors.grey,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12)),
+                              ),
+                            );
+                          }).toList(),
                         );
                       }),
                     ],
@@ -784,6 +825,7 @@ class StatisticsTabView extends StatelessWidget {
     bool isHighlighted = false,
   }) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         FractionallySizedBox(
@@ -848,11 +890,62 @@ class StatisticsTabView extends StatelessWidget {
                         child: Obx(() {
                           final labels = _getXAxisLabels(filterState.filterMode.value);
                           return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: List.generate(labels.length, (index) {
                               double drank = (math.sin(index * 2) + 1.5) * 4;
-                              return _buildMultiIndicatorWaterBar(drank, 5.0, 10.0);
+                              double goal = 5.0;
+                              double maxAmount = 10.0;
+                              double topOfBar = math.max(drank, goal);
+                              double remainingSpace = math.max(0.0, maxAmount - topOfBar);
+                              
+                              final tooltipKey = GlobalKey<TooltipState>();
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        _buildMultiIndicatorWaterBar(drank, goal, maxAmount),
+                                        Column(
+                                          children: [
+                                            if (remainingSpace > 0)
+                                              Expanded(
+                                                flex: (remainingSpace * 100).toInt(),
+                                                child: const SizedBox(),
+                                              ),
+                                            Tooltip(
+                                              key: tooltipKey,
+                                              message: 'Drank: ${drank.toStringAsFixed(1)}L',
+                                              triggerMode: TooltipTriggerMode.manual,
+                                              preferBelow: false,
+                                              verticalOffset: 10,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black87,
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              textStyle: const TextStyle(
+                                                color: AppColors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              child: const SizedBox(width: 4, height: 4),
+                                            ),
+                                            if (topOfBar > 0)
+                                              Expanded(
+                                                flex: (topOfBar * 100).toInt(),
+                                                child: const SizedBox(),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
                             }),
                           );
                         }),
@@ -862,8 +955,18 @@ class StatisticsTabView extends StatelessWidget {
                       Obx(() {
                         final labels = _getXAxisLabels(filterState.filterMode.value);
                         return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: labels.map((lbl) => Text(lbl, style: const TextStyle(color: AppColors.grey, fontWeight: FontWeight.bold, fontSize: 12))).toList(),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: labels.map((lbl) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(lbl,
+                                    style: const TextStyle(
+                                        color: AppColors.grey,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12)),
+                              ),
+                            );
+                          }).toList(),
                         );
                       }),
                     ],
@@ -969,9 +1072,62 @@ class StatisticsTabView extends StatelessWidget {
                 Expanded(
                   child: Obx(() {
                     final labels = _getXAxisLabels(filterState.filterMode.value);
-                    return CustomPaint(
-                      painter: LineChartPainter(labels.length),
-                      child: Container(),
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: LineChartPainter(labels.length),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: List.generate(labels.length, (index) {
+                              double h = (math.sin(index * 1.5) * 0.15) + 0.6 - (index * 0.05);
+                              double val = 150 - (h.clamp(0.1, 0.9) * 15);
+                              final tooltipKey = GlobalKey<TooltipState>();
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        FractionallySizedBox(
+                                          heightFactor: h.clamp(0.1, 0.9),
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Tooltip(
+                                              key: tooltipKey,
+                                              message: '${val.toStringAsFixed(1)} lbs',
+                                              triggerMode: TooltipTriggerMode.manual,
+                                              preferBelow: false,
+                                              verticalOffset: 10,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black87,
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              textStyle: const TextStyle(
+                                                color: AppColors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              child: const SizedBox(width: 4, height: 4),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
                     );
                   }),
                 ),
@@ -980,18 +1136,19 @@ class StatisticsTabView extends StatelessWidget {
                 const SizedBox(height: 8),
                 Obx(() {
                   final labels = _getXAxisLabels(filterState.filterMode.value);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: labels
-                          .map((lbl) => Text(lbl,
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: labels.map((lbl) {
+                      return Expanded(
+                        child: Center(
+                          child: Text(lbl,
                               style: const TextStyle(
                                   color: AppColors.grey,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 12)))
-                          .toList(),
-                    ),
+                                  fontSize: 12)),
+                        ),
+                      );
+                    }).toList(),
                   );
                 }),
               ],

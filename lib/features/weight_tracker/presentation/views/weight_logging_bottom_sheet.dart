@@ -1,10 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/weight_tracker_controller.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../onboarding/presentation/widgets/horizontal_ruler_slider.dart';
 
 class WeightLoggingBottomSheet extends StatefulWidget {
-  const WeightLoggingBottomSheet({super.key});
+  final String title;
+  final double initialWeight;
+  final Function(double) onSave;
+
+  const WeightLoggingBottomSheet({
+    super.key,
+    required this.title,
+    required this.initialWeight,
+    required this.onSave,
+  });
 
   @override
   State<WeightLoggingBottomSheet> createState() =>
@@ -12,107 +22,103 @@ class WeightLoggingBottomSheet extends StatefulWidget {
 }
 
 class _WeightLoggingBottomSheetState extends State<WeightLoggingBottomSheet> {
-  final WeightTrackerController controller =
-      Get.find<WeightTrackerController>();
-  late TextEditingController _textController;
   String _selectedUnit = 'lbs'; // Local state for the unit toggle
+  late int _weightValue;
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(
-      text: controller.currentWeight.value.toString(),
-    );
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
+    _weightValue = widget.initialWeight.round();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isKg = _selectedUnit == 'kg';
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.background,
-        border: Border(top: BorderSide(color: AppColors.black, width: 2)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
       ),
-      padding: EdgeInsets.only(top: 24, left: 24, right: 24),
+      padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
       child: SafeArea(
         top: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'LOG WEIGHT',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
+            Text(
+              widget.title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
                 color: AppColors.black,
-                letterSpacing: 1.5,
+                letterSpacing: 1.0,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
 
             // Unit Toggle
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildUnitToggle('lbs'),
-                const SizedBox(width: 16),
-                _buildUnitToggle('kg'),
-              ],
+            Center(
+              child: CupertinoSlidingSegmentedControl<String>(
+                backgroundColor: Colors.grey[200]!,
+                thumbColor: Colors.white,
+                groupValue: _selectedUnit,
+                children: {
+                  'lbs': Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    child: Text(
+                      'Pounds',
+                      style: TextStyle(
+                        color: _selectedUnit == 'lbs' ? Colors.black : Colors.grey[700],
+                        fontWeight: _selectedUnit == 'lbs' ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                  'kg': Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    child: Text(
+                      'Kilograms',
+                      style: TextStyle(
+                        color: _selectedUnit == 'kg' ? Colors.black : Colors.grey[700],
+                        fontWeight: _selectedUnit == 'kg' ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                },
+                onValueChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectedUnit = value;
+                      _weightValue = value == 'kg' ? (widget.initialWeight / 2.20462).round() : widget.initialWeight.round();
+                    });
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            // Weight Display
+            Text(
+              '$_weightValue $_selectedUnit',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
-
-            // Input Box
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                border: Border.all(color: AppColors.black, width: 2),
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: const [
-                  BoxShadow(
-                    color: AppColors.black,
-                    offset: Offset(4, 4),
-                    blurRadius: 0,
-                  ),
-                ],
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      style: const TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.black,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    _selectedUnit,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.black,
-                    ),
-                  ),
-                ],
+            
+            // Weight Slider
+            SizedBox(
+              height: 100,
+              child: HorizontalRulerSlider(
+                key: ValueKey(_selectedUnit), // force rebuild on unit change
+                min: isKg ? 30 : 60,
+                max: isKg ? 200 : 400,
+                initialValue: _weightValue,
+                onChanged: (val) {
+                  setState(() {
+                    _weightValue = val;
+                  });
+                },
               ),
             ),
             const SizedBox(height: 32),
@@ -122,31 +128,13 @@ class _WeightLoggingBottomSheetState extends State<WeightLoggingBottomSheet> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  final double? newWeight = double.tryParse(
-                    _textController.text,
-                  );
-                  if (newWeight != null) {
-                    // If they entered kg, convert it to lbs to store it consistently,
-                    // or just store it. Our system currently expects lbs.
-                    double finalWeight = newWeight;
-                    if (_selectedUnit == 'kg') {
-                      finalWeight = newWeight * 2.20462; // Convert kg to lbs
-                    }
-
-                    controller.logWeight(
-                      double.parse(finalWeight.toStringAsFixed(1)),
-                    );
-                    Get.back();
-                  } else {
-                    Get.snackbar(
-                      'Invalid Input',
-                      'Please enter a valid weight number',
-                      backgroundColor: Colors.red,
-                      colorText: Colors.white,
-                      snackPosition: SnackPosition.BOTTOM,
-                      margin: const EdgeInsets.all(16),
-                    );
+                  double finalWeight = _weightValue.toDouble();
+                  if (_selectedUnit == 'kg') {
+                    finalWeight = finalWeight * 2.20462; // Convert kg to lbs
                   }
+
+                  widget.onSave(double.parse(finalWeight.toStringAsFixed(1)));
+                  Get.back();
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -155,32 +143,6 @@ class _WeightLoggingBottomSheetState extends State<WeightLoggingBottomSheet> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUnitToggle(String unit) {
-    bool isSelected = _selectedUnit == unit;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedUnit = unit;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.black : AppColors.white,
-          border: Border.all(color: AppColors.black, width: 2),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          unit.toUpperCase(),
-          style: TextStyle(
-            color: isSelected ? AppColors.white : AppColors.black,
-            fontWeight: FontWeight.w900,
-          ),
         ),
       ),
     );

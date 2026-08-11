@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/water_intake_controller.dart';
 import '../widgets/wave_progress_indicator.dart';
 import 'drink_logging_view.dart';
+import 'water_goal_bottom_sheet.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class WaterIntakeView extends StatelessWidget {
@@ -70,7 +71,7 @@ class WaterIntakeView extends StatelessWidget {
             children: [
               _buildMainWaveCard(),
               const SizedBox(height: 32),
-              _buildInfoCards(),
+              _buildInfoCards(context),
               const SizedBox(height: 32),
               _buildHistorySection(),
               _buildDrinkButton(context),
@@ -165,74 +166,81 @@ class WaterIntakeView extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCards() {
+  Widget _buildInfoCards(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              border: Border.all(color: AppColors.black, width: 2),
-              borderRadius: BorderRadius.circular(4),
-              boxShadow: const [
-                BoxShadow(
-                  color: AppColors.black,
-                  offset: Offset(4, 4),
-                  blurRadius: 0,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    Icon(Icons.flag, color: AppColors.black, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'TARGET',
-                      style: TextStyle(
-                        color: AppColors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
+          child: GestureDetector(
+            onTap: () {
+              _showUpdateTargetBottomSheet(context);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                border: Border.all(color: AppColors.black, width: 2),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: const [
+                  BoxShadow(
+                    color: AppColors.black,
+                    offset: Offset(4, 4),
+                    blurRadius: 0,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.flag, color: AppColors.black, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        'TARGET',
+                        style: TextStyle(
+                          color: AppColors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Obx(() {
-                  double pct =
-                      (controller.currentIntake.value /
-                          controller.dailyGoal.value) *
-                      100;
-                  return FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          '${controller.dailyGoal.value}L',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 20,
+                      Spacer(),
+                      Icon(Icons.edit, color: AppColors.black, size: 16),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Obx(() {
+                    double pct =
+                        (controller.currentIntake.value /
+                            controller.dailyGoal.value) *
+                        100;
+                    return FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            '${controller.dailyGoal.value}L',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '(${pct.toStringAsFixed(0)}%)',
-                          style: const TextStyle(
-                            color: AppColors.black,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(width: 4),
+                          Text(
+                            '(${pct.toStringAsFixed(0)}%)',
+                            style: const TextStyle(
+                              color: AppColors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),
@@ -405,6 +413,22 @@ class WaterIntakeView extends StatelessWidget {
           child: Text('+ ADD DRINK'),
         ),
       ),
+    );
+  }
+
+  void _showUpdateTargetBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return WaterGoalBottomSheet(
+          initialGoal: controller.dailyGoal.value,
+          onSave: (newGoal) {
+            controller.dailyGoal.value = newGoal;
+          },
+        );
+      },
     );
   }
 }

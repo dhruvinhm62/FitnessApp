@@ -34,9 +34,15 @@ class WeightHistoryView extends StatelessWidget {
       body: Obx(() {
         if (controller.history.isEmpty) {
           return const Center(
-            child: Text(
-              'No weight logs yet.',
-              style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.grey, fontSize: 16),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 24),
+              child: Text(
+                'No weight logs yet.',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           );
         }
