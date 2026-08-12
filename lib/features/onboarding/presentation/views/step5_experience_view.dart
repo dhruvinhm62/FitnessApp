@@ -26,8 +26,6 @@ class Step5ExperienceView extends GetView<OnboardingController> {
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 32),
-                    _buildExperienceCard('None', 'Currently not lifting', Icons.do_not_disturb_on_total_silence),
-                    const SizedBox(height: 16),
                     _buildExperienceCard('Beginner', 'Lifting for the past year or less', Icons.signal_cellular_alt_1_bar),
                     const SizedBox(height: 16),
                     _buildExperienceCard('Intermediate', 'Lifting for more than the past year, but less than 4 years', Icons.signal_cellular_alt_2_bar),

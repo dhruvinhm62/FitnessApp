@@ -209,7 +209,6 @@ class SettingsView extends GetView<SettingsController> {
                               padding: const EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 16),
                               child: Column(
                                 children: [
-                                  _buildExperienceCard('None', 'Currently not lifting', Icons.do_not_disturb_on_total_silence, controller.exerciseLevel.value, controller.setExerciseLevel),
                                   _buildExperienceCard('Beginner', 'Lifting for the past year or less', Icons.signal_cellular_alt_1_bar, controller.exerciseLevel.value, controller.setExerciseLevel),
                                   _buildExperienceCard('Intermediate', 'Lifting for more than the past year, but less than 4 years', Icons.signal_cellular_alt_2_bar, controller.exerciseLevel.value, controller.setExerciseLevel),
                                   _buildExperienceCard('Advanced', 'Lifting for the past 4 years or more', Icons.signal_cellular_alt, controller.exerciseLevel.value, controller.setExerciseLevel),
