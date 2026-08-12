@@ -10,7 +10,9 @@ class WorkoutDay {
   final List<String> muscleGroups;
   final bool isRestDay;
   final bool isCompleted;
-  
+  // '' = no action, 'completed' = completed, 'skipped' = skipped
+  String dayStatus;
+
   WorkoutDay({
     required this.id,
     required this.title,
@@ -18,6 +20,7 @@ class WorkoutDay {
     this.muscleGroups = const [],
     this.isRestDay = false,
     this.isCompleted = false,
+    this.dayStatus = '',
   });
 }
 
@@ -36,9 +39,6 @@ class WorkoutWeek {
 }
 
 class WorkoutTabController extends GetxController {
-  final activeProgramName = "Booty Builder 1.0".obs;
-  final activeProgramPhase = "Phase 1 - Hypertrophy".obs;
-
   // Dynamic current-week calendar
   final calendarDates = <Map<String, String>>[].obs;
   final selectedDateIndex = 0.obs;
@@ -49,8 +49,18 @@ class WorkoutTabController extends GetxController {
 
   String get currentMonthYear {
     const months = [
-      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
     ];
     final now = DateTime.now();
     return '${months[now.month - 1]} ${now.year}';
@@ -102,10 +112,8 @@ class WorkoutTabController extends GetxController {
     selectedDateIndex.value = todayIndex;
   }
 
-
   @override
   void onInit() {
-
     super.onInit();
     _initCalendar();
     _generateSchedule();
@@ -117,7 +125,7 @@ class WorkoutTabController extends GetxController {
     if (selectedWorkoutDays.value == "5 Days") days = 5;
 
     final newWeeks = <WorkoutWeek>[];
-    
+
     for (int w = 1; w <= 4; w++) {
       final weekDays = <WorkoutDay>[];
       int workoutCount = 1;
@@ -140,8 +148,8 @@ class WorkoutTabController extends GetxController {
               title: 'Workout Day $workoutCount',
               subtitle: '${selectedWorkoutType.value} Focus',
               muscleGroups: ['Full Body'],
-              isCompleted: (w == 1 && d == 1), // mock first day completed
-            )
+              isCompleted: false,
+            ),
           );
           workoutCount++;
         } else {
@@ -149,22 +157,24 @@ class WorkoutTabController extends GetxController {
             WorkoutDay(
               id: 'w${w}_d$d',
               title: 'Rest Day $restCount',
-              subtitle: 'Recovery',
+              subtitle: '',
               isRestDay: true,
-            )
+            ),
           );
           restCount++;
         }
       }
-      
-      newWeeks.add(WorkoutWeek(
-        id: 'w$w',
-        title: 'Week $w',
-        days: weekDays,
-        isExpanded: false,
-      ));
+
+      newWeeks.add(
+        WorkoutWeek(
+          id: 'w$w',
+          title: 'Week $w',
+          days: weekDays,
+          isExpanded: false,
+        ),
+      );
     }
-    
+
     weeks.value = newWeeks;
   }
 
@@ -178,9 +188,161 @@ class WorkoutTabController extends GetxController {
   }
 
   void startWorkout(WorkoutDay day) {
-    if (!day.isRestDay) {
+    if (day.isRestDay) {
+      showRestDayDialog(day);
+    } else {
       Get.to(() => WorkoutDetailView(workoutDay: day));
     }
+  }
+
+  void markDayStatus(WorkoutDay day, String status) {
+    for (final week in weeks) {
+      for (final d in week.days) {
+        if (d.id == day.id) {
+          d.dayStatus = status;
+          break;
+        }
+      }
+    }
+    weeks.refresh();
+  }
+
+  void showRestDayDialog(WorkoutDay day) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(4),
+            border: const Border(
+              top: BorderSide(color: AppColors.black, width: 3),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Header row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Rest day icon badge
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      color: AppColors.black,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.bedtime_outlined,
+                      color: AppColors.white,
+                      size: 20,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        size: 18,
+                        color: AppColors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Title
+              const Text(
+                'REST DAY',
+                style: TextStyle(
+                  color: AppColors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Are you sure you want to complete this rest day? Rest is essential for recovery and progress.',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 13,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Divider
+              Container(height: 1, color: Colors.grey.shade200),
+              const SizedBox(height: 20),
+              // Action buttons in one row
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Get.back();
+                        markDayStatus(day, 'skipped');
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.black, width: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: const Text(
+                        'SKIP',
+                        style: TextStyle(
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        markDayStatus(day, 'completed');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.black,
+                        foregroundColor: AppColors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: const Text(
+                        'COMPLETE',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   // Workout Settings
@@ -190,7 +352,7 @@ class WorkoutTabController extends GetxController {
   void showWorkoutSettings() {
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0,vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
         decoration: const BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
@@ -202,155 +364,226 @@ class WorkoutTabController extends GetxController {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Workout Settings', style: TextStyle(color: AppColors.black, fontSize: 20, fontWeight: FontWeight.w900)),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.black),
-                    onPressed: () => Get.back(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const Text('WHERE DO YOU PLAN TO WORKOUT?', style: TextStyle(color: AppColors.black, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
-              const SizedBox(height: 12),
-              Obx(() {
-                Widget buildCard(String title, String subtitle, IconData icon) {
-                  final isSelected = selectedWorkoutType.value == title;
-                  return GestureDetector(
-                    onTap: () => selectedWorkoutType.value = title,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(isSelected ? 15.0 : 16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: Border.all(
-                          color: isSelected ? AppColors.black : Colors.grey[400]!,
-                          width: isSelected ? 2 : 1,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(icon, color: AppColors.black, size: 28),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  title,
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.black),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  subtitle,
-                                  style: TextStyle(fontSize: 13, color: Colors.grey[700]),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected ? AppColors.black : Colors.grey[400]!,
-                                width: isSelected ? 7 : 2,
-                              ),
-                            ),
-                          ),
-                        ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Workout Settings',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                  );
-                }
-
-                return Column(
-                  children: [
-                    buildCard('Home', 'Bodyweight exercises only', Icons.home),
-                    buildCard('Semi Equipped', 'Dumbbells and resistance bands', Icons.fitness_center),
-                    buildCard('Fully Equipped Gym', 'Access to machines and barbells', Icons.domain),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: AppColors.black),
+                      onPressed: () => Get.back(),
+                    ),
                   ],
-                );
-              }),
-              const SizedBox(height: 32),
-              const Text('HOW MANY DAYS PER WEEK?', style: TextStyle(color: AppColors.black, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
-              const SizedBox(height: 12),
-              Obx(() {
-                Widget buildDayCard(String title, IconData icon) {
-                  final isSelected = selectedWorkoutDays.value == title;
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () => selectedWorkoutDays.value = title,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'WHERE DO YOU PLAN TO WORKOUT?',
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Obx(() {
+                  Widget buildCard(
+                    String title,
+                    String subtitle,
+                    IconData icon,
+                  ) {
+                    final isSelected = selectedWorkoutType.value == title;
+                    return GestureDetector(
+                      onTap: () => selectedWorkoutType.value = title,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: EdgeInsets.all(isSelected ? 15.0 : 16.0),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.black : Colors.transparent,
+                          color: Colors.transparent,
                           border: Border.all(
-                            color: isSelected ? AppColors.black : Colors.grey[400]!,
+                            color: isSelected
+                                ? AppColors.black
+                                : Colors.grey[400]!,
                             width: isSelected ? 2 : 1,
                           ),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(icon, color: isSelected ? AppColors.white : AppColors.black, size: 28),
-                            const SizedBox(height: 8),
-                            Text(
-                              title,
-                              style: TextStyle(
-                                fontSize: 14, 
-                                fontWeight: FontWeight.bold, 
-                                color: isSelected ? AppColors.white : AppColors.black
+                            Icon(icon, color: AppColors.black, size: 28),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    subtitle,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColors.black
+                                      : Colors.grey[400]!,
+                                  width: isSelected ? 7 : 2,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
 
-                return Row(
-                  children: [
-                    buildDayCard('3 Days', Icons.battery_4_bar),
-                    const SizedBox(width: 12),
-                    buildDayCard('4 Days', Icons.fitness_center),
-                    const SizedBox(width: 12),
-                    buildDayCard('5 Days', Icons.local_fire_department),
-                  ],
-                );
-              }),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _generateSchedule();
-                    Get.back();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    foregroundColor: AppColors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                      side: const BorderSide(color: AppColors.black, width: 2),
+                  return Column(
+                    children: [
+                      buildCard(
+                        'Home',
+                        'Bodyweight exercises only',
+                        Icons.home,
+                      ),
+                      buildCard(
+                        'Semi Equipped',
+                        'Dumbbells and resistance bands',
+                        Icons.fitness_center,
+                      ),
+                      buildCard(
+                        'Fully Equipped Gym',
+                        'Access to machines and barbells',
+                        Icons.domain,
+                      ),
+                    ],
+                  );
+                }),
+                const SizedBox(height: 32),
+                const Text(
+                  'HOW MANY DAYS PER WEEK?',
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Obx(() {
+                  Widget buildDayCard(String title, IconData icon) {
+                    final isSelected = selectedWorkoutDays.value == title;
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () => selectedWorkoutDays.value = title,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.black
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.black
+                                  : Colors.grey[400]!,
+                              width: isSelected ? 2 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                icon,
+                                color: isSelected
+                                    ? AppColors.white
+                                    : AppColors.black,
+                                size: 28,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: isSelected
+                                      ? AppColors.white
+                                      : AppColors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Row(
+                    children: [
+                      buildDayCard('3 Days', Icons.battery_4_bar),
+                      const SizedBox(width: 12),
+                      buildDayCard('4 Days', Icons.fitness_center),
+                      const SizedBox(width: 12),
+                      buildDayCard('5 Days', Icons.local_fire_department),
+                    ],
+                  );
+                }),
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _generateSchedule();
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      foregroundColor: AppColors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: const BorderSide(
+                          color: AppColors.black,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'SAVE SETTINGS',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
                     ),
                   ),
-                  child: const Text('SAVE SETTINGS', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2)),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
       ),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

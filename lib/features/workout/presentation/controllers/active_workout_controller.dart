@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../../../exercise_details/presentation/controllers/exercise_details_controller.dart';
+import 'workout_detail_controller.dart';
 import '../../data/models/workout_models.dart';
 
 class ActiveWorkoutController extends GetxController {
@@ -13,6 +14,7 @@ class ActiveWorkoutController extends GetxController {
   ActiveWorkoutController({required this.session, this.initialExerciseIndex = 0});
 
   final currentExerciseIndex = 0.obs;
+  final isLoadingNext = false.obs;
   
   // Sets for the current exercise
   final currentSets = <WorkoutSet>[].obs;
@@ -246,18 +248,29 @@ class ActiveWorkoutController extends GetxController {
   }
   
   void skipExercise() {
-    if (currentExerciseIndex.value < session.exercises.length - 1) {
-      currentExerciseIndex.value++;
-      _loadCurrentExerciseSets();
-    } else {
-      finishWorkout();
-    }
+    var exercise = session.exercises[currentExerciseIndex.value];
+    exercise.status = 'skipped';
+    try {
+      Get.find<WorkoutDetailController>().session.refresh();
+    } catch (_) {}
+    Get.back();
   }
 
-  void nextExercise() {
+  void nextExercise() async {
+    var exercise = session.exercises[currentExerciseIndex.value];
+    exercise.status = 'completed';
+    try {
+      Get.find<WorkoutDetailController>().session.refresh();
+    } catch (_) {}
+
     if (currentExerciseIndex.value < session.exercises.length - 1) {
+      isLoadingNext.value = true;
+      await Future.delayed(const Duration(seconds: 2));
+      
       currentExerciseIndex.value++;
       _loadCurrentExerciseSets();
+      
+      isLoadingNext.value = false;
     } else {
       finishWorkout();
     }

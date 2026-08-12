@@ -59,13 +59,20 @@ class ActiveWorkoutView extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _WorkoutTab(session: session),
-            const _DetailsTab(),
-            const _NotesTab(),
-          ],
-        ),
+        body: Obx(() {
+          if (controller.isLoadingNext.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.black),
+            );
+          }
+          return TabBarView(
+            children: [
+              _WorkoutTab(session: session),
+              const _DetailsTab(),
+              const _NotesTab(),
+            ],
+          );
+        }),
         // No floating bottom timer – shown inline per-set
         bottomNavigationBar: null,
       ),

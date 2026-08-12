@@ -262,7 +262,11 @@ class WorkoutDetailView extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final tabController = Get.find<WorkoutTabController>();
+                              tabController.markDayStatus(workoutDay, 'completed');
+                              Get.back();
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 16.0,
@@ -275,7 +279,11 @@ class WorkoutDetailView extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final tabController = Get.find<WorkoutTabController>();
+                              tabController.markDayStatus(workoutDay, 'skipped');
+                              Get.back();
+                            },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16.0),
                               child: Text('SKIP THE WORKOUT'),
@@ -285,7 +293,11 @@ class WorkoutDetailView extends StatelessWidget {
                         const SizedBox(height: 16),
                         Center(
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final tabController = Get.find<WorkoutTabController>();
+                              tabController.markDayStatus(workoutDay, '');
+                              Get.back();
+                            },
                             child: const Text(
                               'Reset Day?',
                               style: TextStyle(
@@ -368,22 +380,44 @@ class WorkoutDetailView extends StatelessWidget {
                 // Square image with rounded corners
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: exercise.imageUrl.isNotEmpty
-                      ? Image.network(
-                          exercise.imageUrl,
+                  child: Stack(
+                    children: [
+                      exercise.imageUrl.isNotEmpty
+                          ? Image.network(
+                              exercise.imageUrl,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: 60,
+                              height: 60,
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.fitness_center,
+                                color: AppColors.black,
+                              ),
+                            ),
+                      if (exercise.status == 'completed')
+                        Container(
                           width: 60,
                           height: 60,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          width: 60,
-                          height: 60,
-                          color: Colors.grey[200],
-                          child: const Icon(
-                            Icons.fitness_center,
-                            color: AppColors.black,
+                          color: const Color(0xFF34C759).withValues(alpha: 0.7), // green
+                          child: const Center(
+                            child: Icon(Icons.check, color: AppColors.white),
                           ),
                         ),
+                      if (exercise.status == 'skipped')
+                        Container(
+                          width: 60,
+                          height: 60,
+                          color: const Color(0xFF007AFF).withValues(alpha: 0.7), // blue
+                          child: const Center(
+                            child: Icon(Icons.close_rounded, color: AppColors.white),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
                 const SizedBox(width: 16),
                 // Title and sets

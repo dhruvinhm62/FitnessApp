@@ -43,6 +43,7 @@ class Exercise {
   final List<String> targetMuscles;
   final List<TargetSet> targetSets;
   final List<WorkoutSet> sets;
+  String status;
 
   Exercise({
     required this.id,
@@ -53,6 +54,7 @@ class Exercise {
     this.targetMuscles = const [],
     this.targetSets = const [],
     List<WorkoutSet>? sets,
+    this.status = '',
   }) : sets = sets ?? [];
 }
 

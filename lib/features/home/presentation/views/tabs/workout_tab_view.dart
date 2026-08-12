@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/workout_tab_controller.dart';
@@ -94,7 +95,7 @@ class WorkoutTabView extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(
-                        color: AppColors.white.withOpacity(0.5),
+                        color: AppColors.white.withValues(alpha: 0.5),
                         width: 1.5,
                       ),
                       borderRadius: BorderRadius.circular(4),
@@ -149,8 +150,7 @@ class WorkoutTabView extends StatelessWidget {
             final bool isToday = status == 'today';
 
             Color bgColor = Colors.transparent;
-            Color borderColor = AppColors.white.withOpacity(0.3);
-            double borderWidth = 1;
+            Color borderColor = AppColors.white.withValues(alpha: 0.3);
 
             if (isCompleted) {
               bgColor = const Color(0xFF34C759); // green
@@ -161,7 +161,6 @@ class WorkoutTabView extends StatelessWidget {
             } else if (isToday || isSelected) {
               bgColor = Colors.transparent;
               borderColor = AppColors.white;
-              borderWidth = 2;
             }
 
             return Expanded(
@@ -172,10 +171,7 @@ class WorkoutTabView extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
                     color: bgColor,
-                    border: Border.all(
-                      color: borderColor,
-                      width: borderWidth,
-                    ),
+                    border: Border.all(color: borderColor),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Column(
@@ -184,8 +180,8 @@ class WorkoutTabView extends StatelessWidget {
                       Text(
                         dateData['day']!,
                         style: TextStyle(
-                          color: AppColors.white.withOpacity(
-                            (isCompleted || isSkipped) ? 0.85 : 0.7,
+                          color: AppColors.white.withValues(
+                            alpha: (isCompleted || isSkipped) ? 0.85 : 0.7,
                           ),
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
@@ -305,12 +301,59 @@ class WorkoutTabView extends StatelessWidget {
   }
 
   Widget _buildDayCard(WorkoutDay day) {
-    Color cardColor = day.isCompleted ? AppColors.black : AppColors.white;
-    Color textColor = day.isCompleted ? AppColors.white : AppColors.black;
-    IconData icon = day.isCompleted
-        ? Icons.check
-        : (day.isRestDay ? Icons.bedtime_outlined : Icons.fitness_center);
-    Color iconColor = day.isCompleted ? AppColors.white : AppColors.black;
+    // Determine visual state
+    final bool isCompleted = day.isCompleted || day.dayStatus == 'completed';
+    final bool isSkipped = day.dayStatus == 'skipped';
+
+    final bool isRestCompleted = day.isRestDay && isCompleted;
+    final bool isRestSkipped = day.isRestDay && isSkipped;
+    final bool isWorkoutCompleted = !day.isRestDay && isCompleted;
+    final bool isWorkoutSkipped = !day.isRestDay && isSkipped;
+
+    const Color blueColor = Color(0xFF007AFF);
+    const Color greenColor = Color(0xFF34C759);
+
+    Color cardColor;
+    Color textColor;
+    Color iconBgColor;
+    IconData icon;
+    Color iconColor;
+
+    if (isWorkoutCompleted) {
+      cardColor = AppColors.white;
+      textColor = AppColors.black;
+      iconBgColor = greenColor.withValues(alpha: 0.7);
+      icon = Icons.check;
+      iconColor = AppColors.white;
+    } else if (isWorkoutSkipped) {
+      cardColor = AppColors.white;
+      textColor = AppColors.black;
+      iconBgColor = blueColor.withValues(alpha: 0.7);
+      icon = Icons.close_rounded;
+      iconColor = AppColors.white;
+    } else if (isRestCompleted) {
+      cardColor = AppColors.white;
+      textColor = AppColors.black;
+      iconBgColor = greenColor.withValues(alpha: 0.7);
+      icon = Icons.check_rounded;
+      iconColor = AppColors.white;
+    } else if (isRestSkipped) {
+      cardColor = AppColors.white;
+      textColor = AppColors.black;
+      iconBgColor = blueColor.withValues(alpha: 0.7);
+      icon = Icons.close_rounded;
+      iconColor = AppColors.white;
+    } else {
+      // Default (untouched)
+      cardColor = AppColors.white;
+      textColor = AppColors.black;
+      iconBgColor = AppColors.background;
+      icon = day.isRestDay ? Icons.bedtime_outlined : Icons.fitness_center;
+      iconColor = AppColors.black;
+    }
+
+    // Keep border black for the main card, as requested by removing full bg color
+    final Color borderColor = AppColors.black;
 
     return GestureDetector(
       onTap: () => controller.startWorkout(day),
@@ -319,7 +362,7 @@ class WorkoutTabView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: cardColor,
-          border: Border.all(color: AppColors.black, width: 2),
+          border: Border.all(color: borderColor, width: 1),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -327,14 +370,7 @@ class WorkoutTabView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: day.isCompleted
-                    ? AppColors.white.withOpacity(0.2)
-                    : AppColors.background,
-                border: Border.all(
-                  color: day.isCompleted
-                      ? Colors.transparent
-                      : AppColors.black.withOpacity(0.1),
-                ),
+                color: iconBgColor,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Icon(icon, color: iconColor, size: 24),
@@ -357,17 +393,17 @@ class WorkoutTabView extends StatelessWidget {
                     Text(
                       day.muscleGroups.join(' • '),
                       style: TextStyle(
-                        color: textColor.withOpacity(0.6),
+                        color: textColor.withValues(alpha: 0.6),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     )
-                  else
+                  else if (day.subtitle.isNotEmpty)
                     Text(
                       day.subtitle,
                       style: TextStyle(
-                        color: textColor.withOpacity(0.6),
+                        color: textColor.withValues(alpha: 0.6),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
