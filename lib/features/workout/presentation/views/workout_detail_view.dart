@@ -6,6 +6,7 @@ import '../../../home/presentation/controllers/workout_tab_controller.dart';
 import '../controllers/workout_detail_controller.dart';
 import '../../data/models/workout_models.dart';
 import 'active_workout_view.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class WorkoutDetailView extends StatelessWidget {
   final WorkoutDay workoutDay;
@@ -46,10 +47,7 @@ class WorkoutDetailView extends StatelessWidget {
               elevation: 0,
               toolbarHeight: 60,
               centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.white),
-                onPressed: () => Get.back(),
-              ),
+              leading: CustomBackButton(color: AppColors.white),
               title: Text(
                 "WORKOUT",
                 style: TextStyle(

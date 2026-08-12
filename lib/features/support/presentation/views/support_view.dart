@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fitness_app/core/constants/app_colors.dart';
 import 'package:fitness_app/features/support/presentation/controllers/support_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class SupportView extends GetView<SupportController> {
   const SupportView({super.key});
@@ -13,10 +14,7 @@ class SupportView extends GetView<SupportController> {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
         title: const Text(
           'SUPPORT',
           style: TextStyle(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fitness_app/core/constants/app_colors.dart';
 import 'package:fitness_app/features/language/presentation/controllers/language_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class LanguageView extends GetView<LanguageController> {
   const LanguageView({super.key});
@@ -16,10 +17,7 @@ class LanguageView extends GetView<LanguageController> {
             backgroundColor: AppColors.black,
             pinned: true,
             elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.white),
-              onPressed: () => Get.back(),
-            ),
+            leading: CustomBackButton(color: AppColors.white),
             title: const Text(
               'LANGUAGE',
               style: TextStyle(

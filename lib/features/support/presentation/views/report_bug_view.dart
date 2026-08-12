@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:fitness_app/core/constants/app_colors.dart';
 import 'package:fitness_app/features/support/presentation/controllers/report_bug_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class ReportBugView extends GetView<ReportBugController> {
   const ReportBugView({super.key});
@@ -14,10 +15,7 @@ class ReportBugView extends GetView<ReportBugController> {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
         title: const Text(
           'REPORT A BUG',
           style: TextStyle(

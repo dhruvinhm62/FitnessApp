@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/weight_tracker_controller.dart';
 import '../../../../core/constants/app_colors.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class WeightHistoryView extends StatelessWidget {
   WeightHistoryView({super.key});
@@ -16,10 +17,7 @@ class WeightHistoryView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
         title: const Text(
           'WEIGHT HISTORY',
           style: TextStyle(

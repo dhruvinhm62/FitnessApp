@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../controllers/subscription_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class SubscriptionView extends GetView<SubscriptionController> {
   const SubscriptionView({super.key});
@@ -23,10 +24,7 @@ class SubscriptionView extends GetView<SubscriptionController> {
             letterSpacing: 1.5,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
       ),
       body: SafeArea(
         child: Column(

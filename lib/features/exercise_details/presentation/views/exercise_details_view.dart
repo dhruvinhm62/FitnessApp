@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:chewie/chewie.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../controllers/exercise_details_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class ExerciseDetailsView extends GetView<ExerciseDetailsController> {
   const ExerciseDetailsView({super.key});
@@ -20,10 +21,7 @@ class ExerciseDetailsView extends GetView<ExerciseDetailsController> {
           backgroundColor: AppColors.black,
           elevation: 0,
           centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.white),
-            onPressed: () => Get.back(),
-          ),
+          leading: CustomBackButton(color: AppColors.white),
           title: const Text(
             'EXERCISE DETAILS',
             style: TextStyle(

@@ -5,6 +5,7 @@ import '../../../../../core/constants/app_colors.dart';
 import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/exercise_tab_controller.dart';
 import 'widgets/exercise_filter_dialog.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class ExerciseTabView extends GetView<ExerciseTabController> {
   const ExerciseTabView({super.key});
@@ -24,8 +25,8 @@ class ExerciseTabView extends GetView<ExerciseTabController> {
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+            leading: CustomBackButton(
+              color: AppColors.white,
               onPressed: () {
                 if (Get.isRegistered<DashboardController>()) {
                   Get.find<DashboardController>().changeTab(0);

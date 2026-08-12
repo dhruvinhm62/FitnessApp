@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class OnboardingHeader extends StatelessWidget {
   final int step;
@@ -20,10 +21,7 @@ class OnboardingHeader extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Get.back(),
-                ),
+                child: CustomBackButton(),
               ),
             ),
             Padding(

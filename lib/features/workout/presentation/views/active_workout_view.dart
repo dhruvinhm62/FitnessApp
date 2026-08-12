@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../data/models/workout_models.dart';
 import '../controllers/active_workout_controller.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class ActiveWorkoutView extends StatelessWidget {
   final WorkoutSession session;
@@ -35,10 +36,7 @@ class ActiveWorkoutView extends StatelessWidget {
           backgroundColor: AppColors.black,
           elevation: 0,
           centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppColors.white),
-            onPressed: () => Get.back(),
-          ),
+          leading: CustomBackButton(color: AppColors.white),
           title: const Text(
             'WORKOUT DETAILS',
             style: TextStyle(

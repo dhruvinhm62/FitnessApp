@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/snackbar_util.dart';
 import '../../../onboarding/presentation/widgets/custom_date_picker.dart';
 import '../../../onboarding/presentation/widgets/horizontal_ruler_slider.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class MyProfileView extends StatefulWidget {
   const MyProfileView({super.key});
@@ -482,14 +483,15 @@ class _MyProfileViewState extends State<MyProfileView> {
       ),
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.black,
             elevation: 0,
             toolbarHeight: 60,
             centerTitle: true,
-            iconTheme: IconThemeData(color: AppColors.white),
-            title: Text(
+            leading: const CustomBackButton(color: AppColors.white),
+            iconTheme: const IconThemeData(color: AppColors.white),
+            title: const Text(
               'MY PROFILE',
               style: TextStyle(
                 color: AppColors.white,

@@ -5,6 +5,7 @@ import '../widgets/wave_progress_indicator.dart';
 import 'drink_logging_view.dart';
 import 'water_goal_bottom_sheet.dart';
 import '../../../../core/constants/app_colors.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class WaterIntakeView extends StatelessWidget {
   WaterIntakeView({super.key});
@@ -18,10 +19,7 @@ class WaterIntakeView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
         title: const Text(
           'WATER TRACKER',
           style: TextStyle(

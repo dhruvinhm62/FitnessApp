@@ -4,6 +4,7 @@ import '../controllers/water_intake_controller.dart';
 import '../widgets/wave_progress_indicator.dart';
 import 'cup_selection_bottom_sheet.dart';
 import '../../../../core/constants/app_colors.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class DrinkLoggingView extends StatelessWidget {
   DrinkLoggingView({Key? key}) : super(key: key);
@@ -17,10 +18,7 @@ class DrinkLoggingView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.white),
-          onPressed: () => Get.back(),
-        ),
+        leading: CustomBackButton(color: AppColors.white),
         title: const Text(
           'LOG DRINK',
           style: TextStyle(

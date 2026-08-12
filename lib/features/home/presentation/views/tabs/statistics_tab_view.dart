@@ -7,6 +7,7 @@ import '../../../../dashboard/presentation/controllers/dashboard_controller.dart
 import '../../controllers/home_controller.dart';
 import '../../widgets/water_tracker_card.dart';
 import '../../../../weight_tracker/presentation/views/weight_tracker_view.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class StatisticsTabView extends StatelessWidget {
   const StatisticsTabView({super.key});
@@ -29,8 +30,8 @@ class StatisticsTabView extends StatelessWidget {
             toolbarHeight: 60,
             automaticallyImplyLeading: false,
             centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.white),
+            leading: CustomBackButton(
+              color: AppColors.white,
               onPressed: () {
                 if (Get.isRegistered<DashboardController>()) {
                   Get.find<DashboardController>().changeTab(0);

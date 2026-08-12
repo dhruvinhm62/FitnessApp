@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../controllers/settings_controller.dart';
 import '../widgets/settings_expansion_tile.dart';
+import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});
@@ -14,14 +15,15 @@ class SettingsView extends GetView<SettingsController> {
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             pinned: true,
             backgroundColor: AppColors.black,
             elevation: 0,
             toolbarHeight: 60,
             centerTitle: true,
-            iconTheme: IconThemeData(color: AppColors.white),
-            title: Text(
+            leading: const CustomBackButton(color: AppColors.white),
+            iconTheme: const IconThemeData(color: AppColors.white),
+            title: const Text(
               'SETTINGS',
               style: TextStyle(
                 color: AppColors.white,
