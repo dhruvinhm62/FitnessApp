@@ -92,23 +92,27 @@ class WorkoutTabView extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withValues(alpha: 0.2),
+                      color: Colors.transparent,
+                      border: Border.all(
+                        color: AppColors.white.withOpacity(0.5),
+                        width: 1.5,
+                      ),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Column(
+                    child: Column(
                       children: [
                         Text(
-                          'JULY 2026',
-                          style: TextStyle(
+                          controller.currentMonthYear,
+                          style: const TextStyle(
                             color: AppColors.white,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 2,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
-                          'WEEK 4',
-                          style: TextStyle(
+                          controller.currentWeekLabel,
+                          style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -138,17 +142,39 @@ class WorkoutTabView extends StatelessWidget {
           children: List.generate(controller.calendarDates.length, (index) {
             final dateData = controller.calendarDates[index];
             final isSelected = controller.selectedDateIndex.value == index;
+            final status = dateData['status'] ?? 'future';
+
+            final bool isCompleted = status == 'completed';
+            final bool isSkipped = status == 'skipped';
+            final bool isToday = status == 'today';
+
+            Color bgColor = Colors.transparent;
+            Color borderColor = AppColors.white.withOpacity(0.3);
+            double borderWidth = 1;
+
+            if (isCompleted) {
+              bgColor = const Color(0xFF34C759); // green
+              borderColor = const Color(0xFF34C759);
+            } else if (isSkipped) {
+              bgColor = const Color(0xFF007AFF); // blue
+              borderColor = const Color(0xFF007AFF);
+            } else if (isToday || isSelected) {
+              bgColor = Colors.transparent;
+              borderColor = AppColors.white;
+              borderWidth = 2;
+            }
+
             return Expanded(
               child: GestureDetector(
                 onTap: () => controller.selectDate(index),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.white : Colors.transparent,
+                    color: bgColor,
                     border: Border.all(
-                      color: AppColors.white,
-                      width: isSelected ? 0 : 1,
+                      color: borderColor,
+                      width: borderWidth,
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -158,32 +184,46 @@ class WorkoutTabView extends StatelessWidget {
                       Text(
                         dateData['day']!,
                         style: TextStyle(
-                          color: isSelected
-                              ? AppColors.black
-                              : AppColors.white.withOpacity(0.7),
+                          color: AppColors.white.withOpacity(
+                            (isCompleted || isSkipped) ? 0.85 : 0.7,
+                          ),
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        dateData['date']!,
-                        style: TextStyle(
-                          color: isSelected ? AppColors.black : AppColors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 16,
-                        ),
-                      ),
-                      if (isSelected) ...[
-                        const SizedBox(height: 2),
-                        Container(
-                          width: 4,
-                          height: 4,
-                          decoration: const BoxDecoration(
-                            color: AppColors.black,
-                            shape: BoxShape.circle,
+                      if (isCompleted)
+                        const Icon(
+                          Icons.check_rounded,
+                          color: AppColors.white,
+                          size: 18,
+                        )
+                      else if (isSkipped)
+                        const Icon(
+                          Icons.close_rounded,
+                          color: AppColors.white,
+                          size: 18,
+                        )
+                      else ...[
+                        Text(
+                          dateData['date']!,
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
                           ),
                         ),
+                        if (isToday || isSelected) ...[
+                          const SizedBox(height: 2),
+                          Container(
+                            width: 4,
+                            height: 4,
+                            decoration: const BoxDecoration(
+                              color: AppColors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ],
                       ],
                     ],
                   ),

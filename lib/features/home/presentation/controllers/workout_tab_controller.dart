@@ -39,23 +39,75 @@ class WorkoutTabController extends GetxController {
   final activeProgramName = "Booty Builder 1.0".obs;
   final activeProgramPhase = "Phase 1 - Hypertrophy".obs;
 
-  // Calendar dates mock
-  final calendarDates = [
-    {'day': 'M', 'date': '27'},
-    {'day': 'T', 'date': '28'},
-    {'day': 'W', 'date': '29'},
-    {'day': 'T', 'date': '30'},
-    {'day': 'F', 'date': '31'},
-    {'day': 'S', 'date': '1'},
-    {'day': 'S', 'date': '2'},
-  ].obs;
-  final selectedDateIndex = 1.obs;
+  // Dynamic current-week calendar
+  final calendarDates = <Map<String, String>>[].obs;
+  final selectedDateIndex = 0.obs;
 
   final weeks = <WorkoutWeek>[].obs;
 
+  static const _dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  String get currentMonthYear {
+    const months = [
+      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
+    ];
+    final now = DateTime.now();
+    return '${months[now.month - 1]} ${now.year}';
+  }
+
+  String get currentWeekLabel {
+    final now = DateTime.now();
+    final weekOfMonth = ((now.day - 1) ~/ 7) + 1;
+    return 'WEEK $weekOfMonth';
+  }
+
+  void _initCalendar() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    // Monday of the current week
+    final monday = today.subtract(Duration(days: today.weekday - 1));
+    final yesterday = today.subtract(const Duration(days: 1));
+    final dayBeforeYesterday = today.subtract(const Duration(days: 2));
+
+    final dates = <Map<String, String>>[];
+    int todayIndex = 0;
+
+    for (int i = 0; i < 7; i++) {
+      final day = monday.add(Duration(days: i));
+      final isToday = day == today;
+      final isYesterday = day == yesterday;
+      final isDayBeforeYesterday = day == dayBeforeYesterday;
+
+      String status = 'future';
+      if (isToday) {
+        status = 'today';
+        todayIndex = i;
+      } else if (isYesterday) {
+        status = 'skipped';
+      } else if (isDayBeforeYesterday) {
+        status = 'completed';
+      } else if (day.isBefore(today)) {
+        status = 'completed';
+      }
+
+      dates.add({
+        'day': _dayLabels[i],
+        'date': day.day.toString(),
+        'status': status,
+      });
+    }
+
+    calendarDates.value = dates;
+    selectedDateIndex.value = todayIndex;
+  }
+
+
   @override
   void onInit() {
+
     super.onInit();
+    _initCalendar();
     _generateSchedule();
   }
 

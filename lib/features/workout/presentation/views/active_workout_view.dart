@@ -66,76 +66,13 @@ class ActiveWorkoutView extends StatelessWidget {
             const _NotesTab(),
           ],
         ),
-        // Floating Rest Timer
-        bottomNavigationBar: Obx(() {
-          if (!controller.isTimerActive.value) return const SizedBox.shrink();
-
-          final duration = controller.timerSeconds.value;
-          final minutes = (duration / 60).floor();
-          final seconds = (duration % 60).toString().padLeft(2, '0');
-
-          return Container(
-            margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: AppColors.black,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  '$minutes:$seconds',
-                  style: const TextStyle(
-                    color: AppColors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    fontFeatures: [FontFeature.tabularFigures()],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Text(
-                  'Rest Timer',
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                const Spacer(),
-                TextButton(
-                  onPressed: controller.skipRest,
-                  child: const Text(
-                    'SKIP',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.remove_circle_outline,
-                        color: AppColors.white,
-                      ),
-                      onPressed: () => controller.adjustRestTimer(-15),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.add_circle_outline,
-                        color: AppColors.white,
-                      ),
-                      onPressed: () => controller.adjustRestTimer(15),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }),
+        // No floating bottom timer – shown inline per-set
+        bottomNavigationBar: null,
       ),
     );
   }
 }
+
 
 class _WorkoutTab extends GetView<ActiveWorkoutController> {
   final WorkoutSession session;
@@ -508,20 +445,177 @@ class _WorkoutTab extends GetView<ActiveWorkoutController> {
       ),
     );
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: AnimatedCrossFade(
-        firstChild: collapsedChild,
-        secondChild: expandedChild,
-        crossFadeState: isExpanded
-            ? CrossFadeState.showSecond
-            : CrossFadeState.showFirst,
-        duration: const Duration(milliseconds: 300),
-        firstCurve: Curves.easeInOut,
-        secondCurve: Curves.easeInOut,
-        sizeCurve: Curves.easeInOut,
-        alignment: Alignment.topCenter,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AnimatedCrossFade(
+          firstChild: collapsedChild,
+          secondChild: expandedChild,
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          duration: const Duration(milliseconds: 300),
+          firstCurve: Curves.easeInOut,
+          secondCurve: Curves.easeInOut,
+          sizeCurve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+        ),
+        // Timer shown BELOW the card (visible even when card is collapsed)
+        if (!set.isWarmup)
+          Obx(() {
+            final isActive = controller.isTimerActive.value &&
+                controller.activeRestSetIndex.value == index;
+            if (!isActive) return const SizedBox.shrink();
+
+            final duration = controller.timerSeconds.value;
+            final mins = (duration / 60).floor();
+            final secs = (duration % 60).toString().padLeft(2, '0');
+            final progress = controller.maxTimerSeconds.value > 0
+                ? duration / controller.maxTimerSeconds.value
+                : 0.0;
+
+            return Container(
+              margin: const EdgeInsets.only(top: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      // Left: time + label stacked
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '$mins:$secs',
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Rest Timer',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      // Right: SKIP | −15s | 15s+
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: controller.skipRest,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.white24, width: 1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Text(
+                                'SKIP',
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.6,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () => controller.adjustRestTimer(-15),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.remove,
+                                      color: AppColors.white, size: 13),
+                                  SizedBox(width: 3),
+                                  Text(
+                                    '15s',
+                                    style: TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () => controller.adjustRestTimer(15),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white10,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '15s',
+                                    style: TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(width: 3),
+                                  Icon(Icons.add,
+                                      color: AppColors.white, size: 13),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Progress bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 4,
+                      backgroundColor: Colors.white12,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        const SizedBox(height: 12),
+      ],
     );
   }
 

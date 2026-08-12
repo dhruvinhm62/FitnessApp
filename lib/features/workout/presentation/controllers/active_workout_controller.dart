@@ -21,6 +21,7 @@ class ActiveWorkoutController extends GetxController {
   final isTimerActive = false.obs;
   final timerSeconds = 0.obs;
   final maxTimerSeconds = 0.obs;
+  final activeRestSetIndex = RxnInt(); // which set index owns the timer
   Timer? _timer;
 
   // UI state
@@ -141,10 +142,25 @@ class ActiveWorkoutController extends GetxController {
     var set = currentSets[index];
     set.isCompleted = true;
     currentSets[index] = set;
-    manuallyExpandedSetId.value = null;
+
+    // Explicitly expand the next uncompleted set, or collapse all
+    final nextIndex = currentSets.indexWhere(
+      (s) => !s.isCompleted,
+      index + 1,
+    );
+    if (nextIndex != -1) {
+      manuallyExpandedSetId.value = currentSets[nextIndex].id;
+    } else {
+      manuallyExpandedSetId.value = 'none'; // all done, collapse everything
+    }
+
     currentSets.refresh();
-    
-    _startRestTimer(175); // 2:55 mock
+
+    // Start rest timer only for working (non-warmup) sets
+    if (!set.isWarmup) {
+      activeRestSetIndex.value = index;
+      _startRestTimer(175);
+    }
   }
 
   void addSet() {
@@ -211,6 +227,7 @@ class ActiveWorkoutController extends GetxController {
   void stopTimer() {
     _timer?.cancel();
     isTimerActive.value = false;
+    activeRestSetIndex.value = null;
   }
   
   void skipRest() {

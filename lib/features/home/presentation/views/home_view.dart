@@ -8,6 +8,7 @@ import 'member_spotlight_details_view.dart';
 import '../../../weight_tracker/presentation/views/weight_tracker_view.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/water_tracker_card.dart';
+import '../../../dashboard/presentation/controllers/dashboard_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -80,10 +81,10 @@ class HomeView extends GetView<HomeController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
-                    "TODAY'S WORKOUT • 26 JUL, SUN",
+                  Text(
+                    controller.todayWorkoutLabel,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
@@ -109,7 +110,11 @@ class HomeView extends GetView<HomeController> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (Get.isRegistered<DashboardController>()) {
+                              Get.find<DashboardController>().changeTab(1);
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.white,
                             foregroundColor: AppColors.black,
@@ -243,40 +248,82 @@ class HomeView extends GetView<HomeController> {
             () => Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: controller.streakDays.map((day) {
+                Color circleBg = Colors.white;
+                Color borderColor = AppColors.black;
+                double borderWidth = 1;
+                Widget centerChild;
+
+                if (day.isCompleted) {
+                  circleBg = const Color(0xFF34C759); // green
+                  borderColor = const Color(0xFF34C759);
+                  centerChild = const Icon(
+                    Icons.check_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  );
+                } else if (day.isSkipped) {
+                  circleBg = const Color(0xFF007AFF); // blue
+                  borderColor = const Color(0xFF007AFF);
+                  centerChild = const Icon(
+                    Icons.close_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  );
+                } else if (day.isToday) {
+                  circleBg = Colors.white;
+                  borderColor = AppColors.black;
+                  borderWidth = 3;
+                  centerChild = Text(
+                    '${day.date}',
+                    style: const TextStyle(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  );
+                } else {
+                  // future
+                  circleBg = Colors.white;
+                  borderColor = Colors.grey.shade300;
+                  centerChild = Text(
+                    '${day.date}',
+                    style: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  );
+                }
+
                 return Column(
                   children: [
                     Text(
                       day.day,
-                      style: const TextStyle(
-                        color: AppColors.black,
+                      style: TextStyle(
+                        color: day.isCompleted || day.isSkipped
+                            ? AppColors.black
+                            : day.isToday
+                                ? AppColors.black
+                                : Colors.grey.shade400,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: day.isCompleted
-                            ? AppColors.black
-                            : AppColors.white,
+                        color: circleBg,
                         border: Border.all(
-                          color: AppColors.black,
-                          width: day.isToday ? 3 : 1,
+                          color: borderColor,
+                          width: borderWidth,
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: Text(
-                        '${day.date}',
-                        style: TextStyle(
-                          color: day.isCompleted
-                              ? AppColors.white
-                              : AppColors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: centerChild,
                     ),
                   ],
                 );

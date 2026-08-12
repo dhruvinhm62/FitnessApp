@@ -9,8 +9,15 @@ class StreakDay {
   final int date;
   final bool isCompleted;
   final bool isToday;
+  final bool isSkipped;
 
-  StreakDay({required this.day, required this.date, this.isCompleted = false, this.isToday = false});
+  StreakDay({
+    required this.day,
+    required this.date,
+    this.isCompleted = false,
+    this.isToday = false,
+    this.isSkipped = false,
+  });
 }
 
 class MemberSpotlight {
@@ -57,6 +64,12 @@ class ChartFilterState {
 
 class HomeController extends GetxController {
   final userName = "Sarah".obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initStreakDays();
+  }
   
   // Header
   final currentWorkoutTitle = "Day 1: Full Body Workout".obs;
@@ -65,16 +78,56 @@ class HomeController extends GetxController {
   final daysRemaining = 21.obs;
   final percentComplete = 21.obs;
 
-  // Streak
-  final streakDays = <StreakDay>[
-    StreakDay(day: 'Mon', date: 3, isCompleted: true),
-    StreakDay(day: 'Tue', date: 4, isCompleted: true),
-    StreakDay(day: 'Wed', date: 5, isToday: true),
-    StreakDay(day: 'Thu', date: 6),
-    StreakDay(day: 'Fri', date: 7),
-    StreakDay(day: 'Sat', date: 8),
-    StreakDay(day: 'Sun', date: 9),
-  ].obs;
+  // Streak – generated dynamically from real current week
+  final streakDays = <StreakDay>[].obs;
+
+  static const _streakDayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  String get todayWorkoutLabel {
+    final now = DateTime.now();
+    const months = [
+      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+    ];
+    const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    final dow = weekdays[now.weekday - 1];
+    return "TODAY'S WORKOUT • ${now.day} ${months[now.month - 1]}, $dow";
+  }
+
+  void _initStreakDays() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final monday = today.subtract(Duration(days: today.weekday - 1));
+    final yesterday = today.subtract(const Duration(days: 1));
+    final dayBeforeYesterday = today.subtract(const Duration(days: 2));
+
+    streakDays.value = List.generate(7, (i) {
+      final day = monday.add(Duration(days: i));
+      final isToday = day == today;
+      final isYesterday = day == yesterday;
+      final isDayBeforeYesterday = day == dayBeforeYesterday;
+      final isPast = day.isBefore(today);
+
+      bool isCompleted = false;
+      bool isSkipped = false;
+
+      if (isToday) {
+        // today – neither completed nor skipped yet
+      } else if (isYesterday) {
+        isSkipped = true;
+      } else if (isDayBeforeYesterday || isPast) {
+        isCompleted = true;
+      }
+
+      return StreakDay(
+        day: _streakDayLabels[i],
+        date: day.day,
+        isCompleted: isCompleted,
+        isSkipped: isSkipped,
+        isToday: isToday,
+      );
+    });
+  }
 
   // Member Spotlight
   final spotlights = <MemberSpotlight>[
