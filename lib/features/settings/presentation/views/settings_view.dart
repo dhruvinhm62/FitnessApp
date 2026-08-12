@@ -78,6 +78,98 @@ class SettingsView extends GetView<SettingsController> {
                             ),
                           ),
                         ),
+                        Obx(() {
+                          if (controller.notificationsEnabled.value) {
+                            return Column(
+                              children: [
+                                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                                  title: const Text('Workout Reminder', style: TextStyle(fontSize: 14, color: AppColors.black)),
+                                  trailing: GestureDetector(
+                                    onTap: () async {
+                                      final TimeOfDay? picked = await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay.now(),
+                                        builder: (context, child) {
+                                          return Theme(
+                                            data: Theme.of(context).copyWith(
+                                              colorScheme: const ColorScheme.light(
+                                                primary: AppColors.black, 
+                                                onPrimary: AppColors.white, 
+                                                onSurface: AppColors.black, 
+                                              ),
+                                              textButtonTheme: TextButtonThemeData(
+                                                style: TextButton.styleFrom(foregroundColor: AppColors.black),
+                                              ),
+                                            ),
+                                            child: child!,
+                                          );
+                                        },
+                                      );
+                                      if (picked != null) {
+                                        controller.setWorkoutReminderTime(picked.format(context));
+                                      }
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        controller.workoutReminderTime.value,
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                                SwitchListTile(
+                                  title: const Text(
+                                    'Achievement Notifications',
+                                    style: TextStyle(fontSize: 14, color: AppColors.black),
+                                  ),
+                                  value: controller.achievementNotifications.value,
+                                  onChanged: controller.toggleAchievementNotifications,
+                                  activeThumbColor: AppColors.black,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0,
+                                  ),
+                                ),
+                                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Water Reminder', style: TextStyle(fontSize: 14, color: AppColors.black)),
+                                      DropdownButton<String>(
+                                        value: controller.waterReminderFrequency.value,
+                                        underline: const SizedBox(),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.black),
+                                        icon: const Icon(Icons.arrow_drop_down, color: AppColors.black),
+                                        onChanged: (String? newValue) {
+                                          if (newValue != null) {
+                                            controller.setWaterReminderFrequency(newValue);
+                                          }
+                                        },
+                                        items: <String>['Off', 'Every 1 hour', 'Every 2 hours', 'Every 4 hours']
+                                            .map<DropdownMenuItem<String>>((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        }),
                         const Divider(height: 1, color: Color(0xFFE0E0E0)),
                         Obx(
                           () => SwitchListTile(

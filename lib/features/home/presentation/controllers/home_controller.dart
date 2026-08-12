@@ -166,4 +166,6 @@ class HomeController extends GetxController {
   final topExercisesFilter = ChartFilterState();
   final waterFilter = ChartFilterState();
   final weightFilter = ChartFilterState();
+  final nutritionFilter = ChartFilterState();
+  final bodyMeasurementsFilter = ChartFilterState();
 }

@@ -3,10 +3,12 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import '../../../../../core/constants/app_colors.dart';
+import 'package:intl/intl.dart';
 import '../../../../dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../controllers/home_controller.dart';
 import '../../widgets/water_tracker_card.dart';
 import '../../../../weight_tracker/presentation/views/weight_tracker_view.dart';
+
 import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class StatisticsTabView extends StatelessWidget {
@@ -69,7 +71,10 @@ class StatisticsTabView extends StatelessWidget {
                         context,
                       ),
                       const SizedBox(height: 16),
-                      _buildWeeklyActivityChart(controller, controller.activityFilter),
+                      _buildWeeklyActivityChart(
+                        controller,
+                        controller.activityFilter,
+                      ),
                       const SizedBox(height: 32),
                       _buildSectionHeader(
                         'TOP EXERCISES',
@@ -78,7 +83,9 @@ class StatisticsTabView extends StatelessWidget {
                         context,
                       ),
                       const SizedBox(height: 16),
-                      TopExercisesSection(filterState: controller.topExercisesFilter),
+                      TopExercisesSection(
+                        filterState: controller.topExercisesFilter,
+                      ),
                       const SizedBox(height: 32),
                       _buildSectionHeader(
                         'WATER INTAKE',
@@ -97,9 +104,186 @@ class StatisticsTabView extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       _buildWeightGraph(controller.weightFilter),
+                      const SizedBox(height: 32),
+                      _buildSectionHeader(
+                        'NUTRITION',
+                        Icons.restaurant,
+                        controller.nutritionFilter,
+                        context,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildNutritionGraph(controller.nutritionFilter),
+                      const SizedBox(height: 32),
+                      _buildSectionHeader(
+                        'BODY MEASUREMENTS',
+                        Icons.accessibility_new,
+                        controller.bodyMeasurementsFilter,
+                        context,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildBodyMeasurementsGraph(controller.bodyMeasurementsFilter),
+                      const SizedBox(height: 50),
                     ],
                   ),
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBodyMeasurementsGraph(ChartFilterState filterState) {
+    return Container(
+      height: 250,
+      padding: const EdgeInsets.only(top: 20, right: 20, left: 10, bottom: 20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '20 %',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '18 %',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '16 %',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '14 %',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Obx(() {
+                    final labels = _getXAxisLabels(
+                      filterState.filterMode.value,
+                    );
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: LineChartPainter(labels.length),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: List.generate(labels.length, (index) {
+                              double h =
+                                  (math.sin(index * 1.5) * 0.15) +
+                                  0.6 -
+                                  (index * 0.05);
+                              double val = 20 - (h.clamp(0.1, 0.9) * 6);
+                              final tooltipKey = GlobalKey<TooltipState>();
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    tooltipKey.currentState
+                                        ?.ensureTooltipVisible();
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        FractionallySizedBox(
+                                          heightFactor: h.clamp(0.1, 0.9),
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Tooltip(
+                                              key: tooltipKey,
+                                              message:
+                                                  '${val.toStringAsFixed(1)} %',
+                                              triggerMode:
+                                                  TooltipTriggerMode.manual,
+                                              preferBelow: false,
+                                              verticalOffset: 10,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black87,
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                              textStyle: const TextStyle(
+                                                color: AppColors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              child: const SizedBox(
+                                                width: 4,
+                                                height: 4,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+                const SizedBox(height: 4),
+                Container(height: 1, color: Colors.grey[300]),
+                const SizedBox(height: 8),
+                Obx(() {
+                  final labels = _getXAxisLabels(filterState.filterMode.value);
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: labels.map((lbl) {
+                      return Expanded(
+                        child: Center(
+                          child: Text(
+                            lbl,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }),
               ],
             ),
           ),
@@ -234,8 +418,7 @@ class StatisticsTabView extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24
-                  ),
+                  const SizedBox(height: 24),
                   Row(
                     children: TimeFilterMode.values.map((mode) {
                       final isSelected = tempMode == mode;
@@ -546,103 +729,102 @@ class StatisticsTabView extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () => Get.to(() => WeightTrackerView()),
                       child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        border: Border.all(color: AppColors.black, width: 2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Obx(() {
-                        bool isPositive = controller.weightProgress.value < 0;
-                        IconData trendIcon = isPositive
-                            ? Icons.trending_down
-                            : Icons.trending_up;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Icon(
-                                      Icons.scale_outlined,
-                                      color: AppColors.black,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      'Weight',
-                                      style: TextStyle(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          border: Border.all(color: AppColors.black, width: 2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Obx(() {
+                          bool isPositive = controller.weightProgress.value < 0;
+                          IconData trendIcon = isPositive
+                              ? Icons.trending_down
+                              : Icons.trending_up;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.scale_outlined,
                                         color: AppColors.black,
-                                        fontWeight: FontWeight.bold,
+                                        size: 20,
                                       ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Weight',
+                                        style: TextStyle(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text(
+                                    '7 Days',
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                                const Text(
-                                  '7 Days',
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  '${controller.currentWeight.value}',
-                                  style: const TextStyle(
-                                    color: AppColors.black,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    '${controller.currentWeight.value}',
+                                    style: const TextStyle(
+                                      color: AppColors.black,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 4),
-                                const Text(
-                                  'lbs',
-                                  style: TextStyle(
-                                    color: AppColors.black,
-                                    fontSize: 14,
+                                  const SizedBox(width: 4),
+                                  const Text(
+                                    'lbs',
+                                    style: TextStyle(
+                                      color: AppColors.black,
+                                      fontSize: 14,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Icon(
-                                  trendIcon,
-                                  color: AppColors.black,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${controller.weightProgress.value.abs()} lbs',
-                                  style: const TextStyle(
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Icon(
+                                    trendIcon,
                                     color: AppColors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                                    size: 16,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      }),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${controller.weightProgress.value.abs()} lbs',
+                                    style: const TextStyle(
+                                      color: AppColors.black,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
                     ),
                   ),
-                  ),
                   const SizedBox(width: 16),
-                  Expanded(
-                    child: WaterTrackerCard(controller: controller),
-                  ),
+                  Expanded(child: WaterTrackerCard(controller: controller)),
                 ],
               ),
             ),
@@ -652,7 +834,10 @@ class StatisticsTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklyActivityChart(HomeController controller, ChartFilterState filterState) {
+  Widget _buildWeeklyActivityChart(
+    HomeController controller,
+    ChartFilterState filterState,
+  ) {
     return Container(
       height: 250,
       padding: const EdgeInsets.only(top: 20, right: 20, left: 10, bottom: 20),
@@ -717,7 +902,8 @@ class StatisticsTabView extends StatelessWidget {
                               return Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                    tooltipKey.currentState
+                                        ?.ensureTooltipVisible();
                                   },
                                   child: Container(
                                     color: Colors.transparent,
@@ -726,8 +912,10 @@ class StatisticsTabView extends StatelessWidget {
                                       alignment: Alignment.topCenter,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             _buildActivityBar(
                                               factor1.clamp(0.1, 1.0),
@@ -737,20 +925,27 @@ class StatisticsTabView extends StatelessWidget {
                                         ),
                                         Tooltip(
                                           key: tooltipKey,
-                                          message: 'Exercise: ${val1.toInt()}\nWeight: ${val2.toInt()} lbs',
-                                          triggerMode: TooltipTriggerMode.manual,
+                                          message:
+                                              'Exercise: ${val1.toInt()}\nWeight: ${val2.toInt()} lbs',
+                                          triggerMode:
+                                              TooltipTriggerMode.manual,
                                           preferBelow: false,
                                           verticalOffset: 10,
                                           decoration: BoxDecoration(
                                             color: Colors.black87,
-                                            borderRadius: BorderRadius.circular(4),
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
                                           ),
                                           textStyle: const TextStyle(
                                             color: AppColors.white,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          child: const SizedBox(width: 4, height: 4),
+                                          child: const SizedBox(
+                                            width: 4,
+                                            height: 4,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -772,11 +967,14 @@ class StatisticsTabView extends StatelessWidget {
                           children: labels.map((lbl) {
                             return Expanded(
                               child: Center(
-                                child: Text(lbl,
-                                    style: const TextStyle(
-                                        color: AppColors.grey,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12)),
+                                child: Text(
+                                  lbl,
+                                  style: const TextStyle(
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                             );
                           }).toList(),
@@ -860,7 +1058,10 @@ class StatisticsTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildWaterGraph(HomeController controller, ChartFilterState filterState) {
+  Widget _buildWaterGraph(
+    HomeController controller,
+    ChartFilterState filterState,
+  ) {
     return Container(
       height: 250,
       padding: const EdgeInsets.only(top: 20, right: 20, left: 10, bottom: 20),
@@ -878,9 +1079,30 @@ class StatisticsTabView extends StatelessWidget {
                 const Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('10L', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
-                    Text('5L', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
-                    Text('0L', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+                    Text(
+                      '10L',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '5L',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '0L',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(width: 8),
@@ -889,7 +1111,9 @@ class StatisticsTabView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Obx(() {
-                          final labels = _getXAxisLabels(filterState.filterMode.value);
+                          final labels = _getXAxisLabels(
+                            filterState.filterMode.value,
+                          );
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: List.generate(labels.length, (index) {
@@ -897,43 +1121,58 @@ class StatisticsTabView extends StatelessWidget {
                               double goal = 5.0;
                               double maxAmount = 10.0;
                               double topOfBar = math.max(drank, goal);
-                              double remainingSpace = math.max(0.0, maxAmount - topOfBar);
-                              
+                              double remainingSpace = math.max(
+                                0.0,
+                                maxAmount - topOfBar,
+                              );
+
                               final tooltipKey = GlobalKey<TooltipState>();
                               return Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                    tooltipKey.currentState
+                                        ?.ensureTooltipVisible();
                                   },
                                   child: Container(
                                     color: Colors.transparent,
                                     child: Stack(
                                       alignment: Alignment.topCenter,
                                       children: [
-                                        _buildMultiIndicatorWaterBar(drank, goal, maxAmount),
+                                        _buildMultiIndicatorWaterBar(
+                                          drank,
+                                          goal,
+                                          maxAmount,
+                                        ),
                                         Column(
                                           children: [
                                             if (remainingSpace > 0)
                                               Expanded(
-                                                flex: (remainingSpace * 100).toInt(),
+                                                flex: (remainingSpace * 100)
+                                                    .toInt(),
                                                 child: const SizedBox(),
                                               ),
                                             Tooltip(
                                               key: tooltipKey,
-                                              message: 'Drank: ${drank.toStringAsFixed(1)}L',
-                                              triggerMode: TooltipTriggerMode.manual,
+                                              message:
+                                                  'Drank: ${drank.toStringAsFixed(1)}L',
+                                              triggerMode:
+                                                  TooltipTriggerMode.manual,
                                               preferBelow: false,
                                               verticalOffset: 10,
                                               decoration: BoxDecoration(
                                                 color: Colors.black87,
-                                                borderRadius: BorderRadius.circular(4),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
                                               ),
                                               textStyle: const TextStyle(
                                                 color: AppColors.white,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                               ),
-                                              child: const SizedBox(width: 4, height: 4),
+                                              child: const SizedBox(
+                                                width: 4,
+                                                height: 4,
+                                              ),
                                             ),
                                             if (topOfBar > 0)
                                               Expanded(
@@ -954,17 +1193,22 @@ class StatisticsTabView extends StatelessWidget {
                       Container(height: 1, color: Colors.grey[300]),
                       const SizedBox(height: 8),
                       Obx(() {
-                        final labels = _getXAxisLabels(filterState.filterMode.value);
+                        final labels = _getXAxisLabels(
+                          filterState.filterMode.value,
+                        );
                         return Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: labels.map((lbl) {
                             return Expanded(
                               child: Center(
-                                child: Text(lbl,
-                                    style: const TextStyle(
-                                        color: AppColors.grey,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12)),
+                                child: Text(
+                                  lbl,
+                                  style: const TextStyle(
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                             );
                           }).toList(),
@@ -982,15 +1226,36 @@ class StatisticsTabView extends StatelessWidget {
             children: [
               Container(width: 10, height: 10, color: AppColors.black),
               const SizedBox(width: 4),
-              const Text('Drank', style: TextStyle(fontSize: 10, color: AppColors.grey, fontWeight: FontWeight.bold)),
+              const Text(
+                'Drank',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(width: 16),
               Container(width: 10, height: 10, color: Colors.grey[200]),
               const SizedBox(width: 4),
-              const Text('Empty', style: TextStyle(fontSize: 10, color: AppColors.grey, fontWeight: FontWeight.bold)),
+              const Text(
+                'Empty',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(width: 16),
               Container(width: 10, height: 10, color: Colors.blue[400]),
               const SizedBox(width: 4),
-              const Text('Over Goal', style: TextStyle(fontSize: 10, color: AppColors.grey, fontWeight: FontWeight.bold)),
+              const Text(
+                'Over Goal',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ],
@@ -998,13 +1263,17 @@ class StatisticsTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildMultiIndicatorWaterBar(double drank, double goal, double maxAmount) {
+  Widget _buildMultiIndicatorWaterBar(
+    double drank,
+    double goal,
+    double maxAmount,
+  ) {
     bool isOverGoal = drank > goal;
     double bottomAmount = isOverGoal ? goal : drank;
     double topAmount = isOverGoal ? (drank - goal) : (goal - drank);
     double remainingSpace = maxAmount - (bottomAmount + topAmount);
     if (remainingSpace < 0) remainingSpace = 0;
-    
+
     Color bottomColor = AppColors.black;
     Color topColor = isOverGoal ? Colors.blue[400]! : Colors.grey[200]!;
 
@@ -1024,7 +1293,10 @@ class StatisticsTabView extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: topColor,
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(4),
+                    topRight: Radius.circular(4),
+                  ),
                 ),
               ),
             ),
@@ -1034,8 +1306,11 @@ class StatisticsTabView extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: bottomColor,
-                  borderRadius: topAmount == 0 
-                      ? const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4))
+                  borderRadius: topAmount == 0
+                      ? const BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        )
                       : BorderRadius.zero,
                 ),
               ),
@@ -1060,10 +1335,38 @@ class StatisticsTabView extends StatelessWidget {
           const Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('150 lbs', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
-              Text('145 lbs', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
-              Text('140 lbs', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
-              Text('135 lbs', style: TextStyle(color: AppColors.grey, fontSize: 10, fontWeight: FontWeight.bold)),
+              Text(
+                '150 lbs',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '145 lbs',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '140 lbs',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '135 lbs',
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           const SizedBox(width: 8),
@@ -1072,7 +1375,9 @@ class StatisticsTabView extends StatelessWidget {
               children: [
                 Expanded(
                   child: Obx(() {
-                    final labels = _getXAxisLabels(filterState.filterMode.value);
+                    final labels = _getXAxisLabels(
+                      filterState.filterMode.value,
+                    );
                     return Stack(
                       children: [
                         Positioned.fill(
@@ -1084,13 +1389,17 @@ class StatisticsTabView extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: List.generate(labels.length, (index) {
-                              double h = (math.sin(index * 1.5) * 0.15) + 0.6 - (index * 0.05);
+                              double h =
+                                  (math.sin(index * 1.5) * 0.15) +
+                                  0.6 -
+                                  (index * 0.05);
                               double val = 150 - (h.clamp(0.1, 0.9) * 15);
                               final tooltipKey = GlobalKey<TooltipState>();
                               return Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    tooltipKey.currentState?.ensureTooltipVisible();
+                                    tooltipKey.currentState
+                                        ?.ensureTooltipVisible();
                                   },
                                   child: Container(
                                     color: Colors.transparent,
@@ -1103,20 +1412,26 @@ class StatisticsTabView extends StatelessWidget {
                                             alignment: Alignment.bottomCenter,
                                             child: Tooltip(
                                               key: tooltipKey,
-                                              message: '${val.toStringAsFixed(1)} lbs',
-                                              triggerMode: TooltipTriggerMode.manual,
+                                              message:
+                                                  '${val.toStringAsFixed(1)} lbs',
+                                              triggerMode:
+                                                  TooltipTriggerMode.manual,
                                               preferBelow: false,
                                               verticalOffset: 10,
                                               decoration: BoxDecoration(
                                                 color: Colors.black87,
-                                                borderRadius: BorderRadius.circular(4),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
                                               ),
                                               textStyle: const TextStyle(
                                                 color: AppColors.white,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                               ),
-                                              child: const SizedBox(width: 4, height: 4),
+                                              child: const SizedBox(
+                                                width: 4,
+                                                height: 4,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1142,11 +1457,14 @@ class StatisticsTabView extends StatelessWidget {
                     children: labels.map((lbl) {
                       return Expanded(
                         child: Center(
-                          child: Text(lbl,
-                              style: const TextStyle(
-                                  color: AppColors.grey,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12)),
+                          child: Text(
+                            lbl,
+                            style: const TextStyle(
+                              color: AppColors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                         ),
                       );
                     }).toList(),
@@ -1154,6 +1472,243 @@ class StatisticsTabView extends StatelessWidget {
                 }),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionGraph(ChartFilterState filterState) {
+    return Container(
+      height: 250,
+      padding: const EdgeInsets.only(top: 20, right: 20, left: 10, bottom: 20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                const Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '3k',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '1.5k',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '0',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
+                Container(width: 1, color: Colors.grey[300]),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Obx(() {
+                          final labels = _getXAxisLabels(
+                            filterState.filterMode.value,
+                          );
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: List.generate(labels.length, (index) {
+                              double calories =
+                                  1500.0 +
+                                  (math.sin(index * 1.5) * 500) +
+                                  (math.Random().nextDouble() * 500);
+                              double protein = (calories * 0.3) / 4;
+                              double carbs = (calories * 0.4) / 4;
+                              double fats = (calories * 0.3) / 9;
+                              double factor = (calories / 3000.0).clamp(
+                                0.1,
+                                1.0,
+                              );
+
+                              final tooltipKey = GlobalKey<TooltipState>();
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    tooltipKey.currentState
+                                        ?.ensureTooltipVisible();
+                                  },
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    alignment: Alignment.bottomCenter,
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            FractionallySizedBox(
+                                              heightFactor: factor,
+                                              child: SizedBox(
+                                                width: 16,
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 30, // fats
+                                                      child: Container(
+                                                        decoration: const BoxDecoration(
+                                                          color: Colors.amber,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                topLeft:
+                                                                    Radius.circular(
+                                                                      4,
+                                                                    ),
+                                                                topRight:
+                                                                    Radius.circular(
+                                                                      4,
+                                                                    ),
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 40, // carbs
+                                                      child: Container(
+                                                        color:
+                                                            Colors.blueAccent,
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 30, // protein
+                                                      child: Container(
+                                                        color: Colors.redAccent,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Tooltip(
+                                          key: tooltipKey,
+                                          message:
+                                              '${calories.toInt()} kcal\nProt: ${protein.toInt()}g\nCarbs: ${carbs.toInt()}g\nFats: ${fats.toInt()}g',
+                                          triggerMode:
+                                              TooltipTriggerMode.manual,
+                                          preferBelow: false,
+                                          verticalOffset: 10,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black87,
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                          textStyle: const TextStyle(
+                                            color: AppColors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          child: const SizedBox(
+                                            width: 4,
+                                            height: 4,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          );
+                        }),
+                      ),
+                      Container(height: 1, color: Colors.grey[300]),
+                      const SizedBox(height: 8),
+                      Obx(() {
+                        final labels = _getXAxisLabels(
+                          filterState.filterMode.value,
+                        );
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: labels.map((lbl) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(
+                                  lbl,
+                                  style: const TextStyle(
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(width: 10, height: 10, color: Colors.redAccent),
+              const SizedBox(width: 4),
+              const Text(
+                'Protein',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(width: 10, height: 10, color: Colors.blueAccent),
+              const SizedBox(width: 4),
+              const Text(
+                'Carbs',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(width: 10, height: 10, color: Colors.amber),
+              const SizedBox(width: 4),
+              const Text(
+                'Fats',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: AppColors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -1187,8 +1742,8 @@ class LineChartPainter extends CustomPainter {
     final List<Offset> points = [];
     final double availableWidth = size.width - (horizontalPadding * 2);
     for (int i = 0; i < pointsCount; i++) {
-      double x = pointsCount > 1 
-          ? horizontalPadding + (availableWidth / (pointsCount - 1)) * i 
+      double x = pointsCount > 1
+          ? horizontalPadding + (availableWidth / (pointsCount - 1)) * i
           : size.width / 2;
       double h = (math.sin(i * 1.5) * 0.15) + 0.6 - (i * 0.05);
       points.add(Offset(x, size.height * h.clamp(0.1, 0.9)));
@@ -1240,18 +1795,46 @@ class _TopExercisesSectionState extends State<TopExercisesSection> {
   List<Map<String, dynamic>> _getData(TimeFilterMode mode) {
     double shift = 0;
     switch (mode) {
-      case TimeFilterMode.weekly: shift = 0; break;
-      case TimeFilterMode.monthly: shift = 5.0; break;
-      case TimeFilterMode.yearly: shift = -5.0; break;
-      case TimeFilterMode.allTime: shift = 2.0; break;
+      case TimeFilterMode.weekly:
+        shift = 0;
+        break;
+      case TimeFilterMode.monthly:
+        shift = 5.0;
+        break;
+      case TimeFilterMode.yearly:
+        shift = -5.0;
+        break;
+      case TimeFilterMode.allTime:
+        shift = 2.0;
+        break;
     }
 
     return [
-      {'title': 'Squats', 'percent': (25.0 + shift).clamp(10.0, 40.0), 'color': AppColors.black},
-      {'title': 'Deadlifts', 'percent': (15.0 - shift * 0.5).clamp(5.0, 30.0), 'color': Colors.grey[800]!},
-      {'title': 'Bench', 'percent': (15.0 + shift * 0.5).clamp(5.0, 30.0), 'color': Colors.grey[700]!},
-      {'title': 'Pull Ups', 'percent': (15.0 - shift * 0.2).clamp(5.0, 30.0), 'color': Colors.grey[500]!},
-      {'title': 'OH Press', 'percent': (10.0 + shift * 0.2).clamp(5.0, 30.0), 'color': Colors.grey[400]!},
+      {
+        'title': 'Squats',
+        'percent': (25.0 + shift).clamp(10.0, 40.0),
+        'color': AppColors.black,
+      },
+      {
+        'title': 'Deadlifts',
+        'percent': (15.0 - shift * 0.5).clamp(5.0, 30.0),
+        'color': Colors.grey[800]!,
+      },
+      {
+        'title': 'Bench',
+        'percent': (15.0 + shift * 0.5).clamp(5.0, 30.0),
+        'color': Colors.grey[700]!,
+      },
+      {
+        'title': 'Pull Ups',
+        'percent': (15.0 - shift * 0.2).clamp(5.0, 30.0),
+        'color': Colors.grey[500]!,
+      },
+      {
+        'title': 'OH Press',
+        'percent': (10.0 + shift * 0.2).clamp(5.0, 30.0),
+        'color': Colors.grey[400]!,
+      },
       {'title': 'Others', 'percent': 20.0, 'color': Colors.grey[300]!},
     ];
   }
@@ -1289,8 +1872,9 @@ class _TopExercisesSectionState extends State<TopExercisesSection> {
                           touchedIndex = -1;
                           return;
                         }
-                        touchedIndex =
-                            pieTouchResponse.touchedSection!.touchedSectionIndex;
+                        touchedIndex = pieTouchResponse
+                            .touchedSection!
+                            .touchedSectionIndex;
                       });
                     },
                   ),

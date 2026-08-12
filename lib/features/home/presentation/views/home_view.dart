@@ -9,6 +9,8 @@ import '../../../weight_tracker/presentation/views/weight_tracker_view.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/water_tracker_card.dart';
 import '../../../dashboard/presentation/controllers/dashboard_controller.dart';
+import '../../../nutrition/presentation/views/nutrition_dashboard_view.dart';
+import '../../../body_measurements/presentation/views/body_measurements_view.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -488,7 +490,123 @@ class HomeView extends GetView<HomeController> {
               Expanded(child: WaterTrackerCard(controller: controller)),
             ],
           ),
+          const SizedBox(height: 16),
+          _buildNutritionCard(),
+          const SizedBox(height: 16),
+          _buildBodyMeasurementsCard(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionCard() {
+    return GestureDetector(
+      onTap: () => Get.to(() => NutritionDashboardView()),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: AppColors.black, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: const [
+            BoxShadow(
+              color: AppColors.black,
+              offset: Offset(4, 4),
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.restaurant_outlined,
+                      color: AppColors.black,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Nutrition',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Log your meals to track calories and macros.',
+              style: TextStyle(
+                color: AppColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBodyMeasurementsCard() {
+    return GestureDetector(
+      onTap: () => Get.to(() => BodyMeasurementsView()),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: AppColors.black, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: const [
+            BoxShadow(
+              color: AppColors.black,
+              offset: Offset(4, 4),
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.accessibility_new,
+                      color: AppColors.black,
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Body Measurements',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Track your body fat and circumference progress.',
+              style: TextStyle(
+                color: AppColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
