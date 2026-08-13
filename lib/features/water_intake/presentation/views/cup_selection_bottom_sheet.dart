@@ -4,7 +4,7 @@ import '../controllers/water_intake_controller.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class CupSelectionBottomSheet extends StatelessWidget {
-  const CupSelectionBottomSheet({Key? key}) : super(key: key);
+  const CupSelectionBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {

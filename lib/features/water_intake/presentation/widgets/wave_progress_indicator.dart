@@ -4,10 +4,10 @@ import 'dart:math' as math;
 class WaveProgressIndicator extends StatefulWidget {
   final double percentage; // 0.0 to 1.0
 
-  const WaveProgressIndicator({Key? key, required this.percentage}) : super(key: key);
+  const WaveProgressIndicator({super.key, required this.percentage});
 
   @override
-  _WaveProgressIndicatorState createState() => _WaveProgressIndicatorState();
+ State<WaveProgressIndicator> createState() => _WaveProgressIndicatorState();
 }
 
 class _WaveProgressIndicatorState extends State<WaveProgressIndicator>
@@ -62,7 +62,7 @@ class WavePainter extends CustomPainter {
     final path2 = Path();
 
     final paint1 = Paint()
-      ..color = const Color(0xFF4A90E2).withOpacity(0.5)
+      ..color = const Color(0xFF4A90E2).withValues(alpha: 0.5)
       ..style = PaintingStyle.fill;
 
     final paint2 = Paint()

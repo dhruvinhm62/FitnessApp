@@ -186,7 +186,7 @@ class SupportView extends GetView<SupportController> {
             ),
             const SizedBox(height: 16),
             Obx(() => DropdownButtonFormField<String>(
-                  value: controller.selectedSubject.value,
+                  initialValue: controller.selectedSubject.value,
                   decoration: const InputDecoration(
                     fillColor: Colors.white,
                     filled: true,

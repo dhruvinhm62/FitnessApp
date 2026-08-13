@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../controllers/home_controller.dart';
-import '../../../../core/constants/app_colors.dart';
 import 'package:fitness_app/core/widgets/custom_back_button.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../controllers/home_controller.dart';
 
 class MemberSpotlightDetailsView extends StatelessWidget {
   final MemberSpotlight spotlight;

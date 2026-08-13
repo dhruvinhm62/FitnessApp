@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:fitness_app/core/widgets/custom_back_button.dart';
+import 'package:flutter/material.dart';
 
 class OnboardingHeader extends StatelessWidget {
   final int step;

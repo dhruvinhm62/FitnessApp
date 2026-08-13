@@ -158,7 +158,7 @@ class _WorkoutTargetsModalState extends State<_WorkoutTargetsModal> {
                     Switch(
                       value: _setRestTimers,
                       onChanged: (val) => setState(() => _setRestTimers = val),
-                      activeColor: AppColors.black,
+                      activeThumbColor: AppColors.black,
                       activeTrackColor: Colors.grey[300],
                     ),
                   ],

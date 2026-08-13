@@ -553,7 +553,7 @@ class _MyProfileViewState extends State<MyProfileView> {
                         decoration: const InputDecoration(
                           labelText: 'Gender',
                         ),
-                        value: gender,
+                        initialValue: gender,
                         items: ['Male', 'Female', 'Non-binary', 'Prefer not to say']
                             .map((label) => DropdownMenuItem(
                                   value: label,

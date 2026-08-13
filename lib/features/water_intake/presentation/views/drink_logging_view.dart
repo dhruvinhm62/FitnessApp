@@ -7,7 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class DrinkLoggingView extends StatelessWidget {
-  DrinkLoggingView({Key? key}) : super(key: key);
+  DrinkLoggingView({super.key});
 
   final WaterIntakeController controller = Get.find<WaterIntakeController>();
 

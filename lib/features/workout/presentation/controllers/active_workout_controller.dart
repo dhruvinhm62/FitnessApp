@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -136,7 +137,7 @@ class ActiveWorkoutController extends GetxController {
 
       isVideoInitialized.value = true;
     } catch (e) {
-      print('Error initializing video: $e');
+      log('Error initializing video: $e');
     }
   }
 

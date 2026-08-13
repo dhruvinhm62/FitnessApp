@@ -8,7 +8,7 @@ import '../../../../dashboard/presentation/controllers/dashboard_controller.dart
 import '../../controllers/home_controller.dart';
 import '../../widgets/water_tracker_card.dart';
 import '../../../../weight_tracker/presentation/views/weight_tracker_view.dart';
-
+import '../../../../body_measurements/presentation/controllers/body_measurements_controller.dart';
 import 'package:fitness_app/core/widgets/custom_back_button.dart';
 
 class StatisticsTabView extends StatelessWidget {
@@ -115,7 +115,7 @@ class StatisticsTabView extends StatelessWidget {
                       _buildNutritionGraph(controller.nutritionFilter),
                       const SizedBox(height: 32),
                       _buildSectionHeader(
-                        'BODY MEASUREMENTS',
+                        'BODY',
                         Icons.accessibility_new,
                         controller.bodyMeasurementsFilter,
                         context,
@@ -136,159 +136,252 @@ class StatisticsTabView extends StatelessWidget {
 
   Widget _buildBodyMeasurementsGraph(ChartFilterState filterState) {
     return Container(
-      height: 250,
+      height: 280,
       padding: const EdgeInsets.only(top: 20, right: 20, left: 10, bottom: 20),
       decoration: BoxDecoration(
         color: AppColors.white,
         border: Border.all(color: Colors.grey[300]!, width: 1),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Column(
         children: [
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '20 %',
-                style: TextStyle(
-                  color: AppColors.grey,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '18 %',
-                style: TextStyle(
-                  color: AppColors.grey,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '16 %',
-                style: TextStyle(
-                  color: AppColors.grey,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '14 %',
-                style: TextStyle(
-                  color: AppColors.grey,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(width: 8),
           Expanded(
-            child: Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '50',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '40',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '30',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '20',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '10',
+                      style: TextStyle(
+                        color: AppColors.grey,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
                 Expanded(
-                  child: Obx(() {
-                    final labels = _getXAxisLabels(
-                      filterState.filterMode.value,
-                    );
-                    return Stack(
-                      children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: LineChartPainter(labels.length),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: List.generate(labels.length, (index) {
-                              double h =
-                                  (math.sin(index * 1.5) * 0.15) +
-                                  0.6 -
-                                  (index * 0.05);
-                              double val = 20 - (h.clamp(0.1, 0.9) * 6);
-                              final tooltipKey = GlobalKey<TooltipState>();
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    tooltipKey.currentState
-                                        ?.ensureTooltipVisible();
-                                  },
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    child: Stack(
-                                      alignment: Alignment.topCenter,
-                                      children: [
-                                        FractionallySizedBox(
-                                          heightFactor: h.clamp(0.1, 0.9),
-                                          child: Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Tooltip(
-                                              key: tooltipKey,
-                                              message:
-                                                  '${val.toStringAsFixed(1)} %',
-                                              triggerMode:
-                                                  TooltipTriggerMode.manual,
-                                              preferBelow: false,
-                                              verticalOffset: 10,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black87,
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                              ),
-                                              textStyle: const TextStyle(
-                                                color: AppColors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              child: const SizedBox(
-                                                width: 4,
-                                                height: 4,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Obx(() {
+                          final labels = _getXAxisLabels(
+                            filterState.filterMode.value,
+                          );
+                          return Stack(
+                            children: [
+                              Positioned.fill(
+                                child: CustomPaint(
+                                  painter: MultiLineChartPainter(
+                                    labels.length,
+                                    const [
+                                      AppColors.black,      // Fat %
+                                      Colors.redAccent,     // Chest
+                                      Colors.blueAccent,    // Waist
+                                      Colors.green,         // Hips
+                                      Colors.orange,        // Arms
+                                    ],
                                   ),
                                 ),
-                              );
-                            }),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+                              ),
+                              Positioned.fill(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: List.generate(labels.length, (index) {
+                                    final tooltipKey = GlobalKey<TooltipState>();
+                                    
+                                    double hFat = (math.sin(index * 1.5 + 0) * 0.1) + 0.2 - (index * 0.02);
+                                    double valFat = 50 - (hFat.clamp(0.1, 0.9) * 40);
+                                    
+                                    double hChest = (math.sin(index * 1.5 + 1) * 0.1) + 0.35 - (index * 0.02);
+                                    double valChest = 50 - (hChest.clamp(0.1, 0.9) * 40);
+                                    
+                                    double hWaist = (math.sin(index * 1.5 + 2) * 0.1) + 0.5 - (index * 0.02);
+                                    double valWaist = 50 - (hWaist.clamp(0.1, 0.9) * 40);
+                                    
+                                    double hHips = (math.sin(index * 1.5 + 3) * 0.1) + 0.65 - (index * 0.02);
+                                    double valHips = 50 - (hHips.clamp(0.1, 0.9) * 40);
+                                    
+                                    double hArms = (math.sin(index * 1.5 + 4) * 0.1) + 0.8 - (index * 0.02);
+                                    double valArms = 50 - (hArms.clamp(0.1, 0.9) * 40);
+
+                                    String msg = 'Fat %: ${valFat.toStringAsFixed(1)}\n'
+                                        'Chest: ${valChest.toStringAsFixed(1)}\n'
+                                        'Waist: ${valWaist.toStringAsFixed(1)}\n'
+                                        'Hips: ${valHips.toStringAsFixed(1)}\n'
+                                        'Arms: ${valArms.toStringAsFixed(1)}';
+
+                                    return Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          tooltipKey.currentState
+                                              ?.ensureTooltipVisible();
+                                        },
+                                        child: Container(
+                                          color: Colors.transparent,
+                                          child: Stack(
+                                            alignment: Alignment.topCenter,
+                                            children: [
+                                              FractionallySizedBox(
+                                                heightFactor: 0.5,
+                                                child: Align(
+                                                  alignment: Alignment.bottomCenter,
+                                                  child: Tooltip(
+                                                    key: tooltipKey,
+                                                    message: msg,
+                                                    triggerMode: TooltipTriggerMode.manual,
+                                                    preferBelow: false,
+                                                    verticalOffset: 10,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black87,
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    textStyle: const TextStyle(
+                                                      color: AppColors.white,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                    child: const SizedBox(
+                                                      width: 4,
+                                                      height: 4,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(height: 1, color: Colors.grey[300]),
+                      const SizedBox(height: 8),
+                      Obx(() {
+                        final labels = _getXAxisLabels(filterState.filterMode.value);
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: labels.map((lbl) {
+                            return Expanded(
+                              child: Center(
+                                child: Text(
+                                  lbl,
+                                  style: const TextStyle(
+                                    color: AppColors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Container(height: 1, color: Colors.grey[300]),
-                const SizedBox(height: 8),
-                Obx(() {
-                  final labels = _getXAxisLabels(filterState.filterMode.value);
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: labels.map((lbl) {
-                      return Expanded(
-                        child: Center(
-                          child: Text(
-                            lbl,
-                            style: const TextStyle(
-                              color: AppColors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                }),
               ],
             ),
           ),
+          const SizedBox(height: 16),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              _buildLegendItem(AppColors.black, 'Fat %'),
+              _buildLegendItem(Colors.redAccent, 'Chest'),
+              _buildLegendItem(Colors.blueAccent, 'Waist'),
+              _buildLegendItem(Colors.green, 'Hips'),
+              _buildLegendItem(Colors.orange, 'Arms'),
+            ],
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(width: 10, height: 10, color: color),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 10,
+            color: AppColors.grey,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetric(String label, double? value) {
+    if (value == null) return const SizedBox.shrink();
+    return Column(
+      children: [
+        Text(
+          value.toString(),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+            color: AppColors.black,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.grey,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 
@@ -315,16 +408,19 @@ class StatisticsTabView extends StatelessWidget {
       children: [
         Icon(icon, size: 20, color: AppColors.black),
         const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            color: AppColors.black,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        const Spacer(),
+        const SizedBox(width: 8),
         GestureDetector(
           onTap: () => _showTimePickerBottomSheet(context, filterState),
           child: Container(
@@ -1778,6 +1874,82 @@ class LineChartPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant LineChartPainter oldDelegate) {
     return oldDelegate.pointsCount != pointsCount;
+  }
+}
+
+class MultiLineChartPainter extends CustomPainter {
+  final int pointsCount;
+  final double horizontalPadding;
+  final List<Color> lineColors;
+
+  MultiLineChartPainter(this.pointsCount, this.lineColors, {this.horizontalPadding = 16.0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw grid lines
+    final gridPaint = Paint()
+      ..color = Colors.grey[200]!
+      ..strokeWidth = 1;
+
+    for (int i = 1; i < 4; i++) {
+      canvas.drawLine(
+        Offset(0, size.height * (i / 4)),
+        Offset(size.width, size.height * (i / 4)),
+        gridPaint,
+      );
+    }
+
+    final double availableWidth = size.width - (horizontalPadding * 2);
+
+    for (int l = 0; l < lineColors.length; l++) {
+      final paint = Paint()
+        ..color = lineColors[l]
+        ..strokeWidth = 3
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round;
+
+      final dotPaint = Paint()
+        ..color = AppColors.white
+        ..style = PaintingStyle.fill;
+
+      final dotBorderPaint = Paint()
+        ..color = lineColors[l]
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke;
+
+      final List<Offset> points = [];
+      for (int i = 0; i < pointsCount; i++) {
+        double x = pointsCount > 1
+            ? horizontalPadding + (availableWidth / (pointsCount - 1)) * i
+            : size.width / 2;
+            
+        // Create some pseudo-random variation based on the line index
+        // Base height for each line so they don't overlap too much
+        double baseHeight = 0.2 + (l * 0.15);
+        double h = (math.sin(i * 1.5 + l) * 0.1) + baseHeight - (i * 0.02);
+        
+        points.add(Offset(x, size.height * h.clamp(0.1, 0.9)));
+      }
+
+      if (points.isNotEmpty) {
+        final path = Path();
+        path.moveTo(points[0].dx, points[0].dy);
+        for (int i = 1; i < points.length; i++) {
+          path.lineTo(points[i].dx, points[i].dy);
+        }
+        canvas.drawPath(path, paint);
+
+        for (final point in points) {
+          canvas.drawCircle(point, 4, dotPaint);
+          canvas.drawCircle(point, 4, dotBorderPaint);
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant MultiLineChartPainter oldDelegate) {
+    return oldDelegate.pointsCount != pointsCount || oldDelegate.lineColors != lineColors;
   }
 }
 

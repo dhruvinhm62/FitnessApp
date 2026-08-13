@@ -12,10 +12,14 @@ class SubscriptionController extends GetxController {
   void subscribe() {
     if (selectedPlanIndex.value != -1) {
       String planName = '';
-      if (selectedPlanIndex.value == 0) planName = '1 Month';
-      else if (selectedPlanIndex.value == 1) planName = '6 Months';
-      else if (selectedPlanIndex.value == 2) planName = '12 Months';
-      
+      if (selectedPlanIndex.value == 0) {
+        planName = '1 Month';
+      } else if (selectedPlanIndex.value == 1) {
+        planName = '6 Months';
+      } else if (selectedPlanIndex.value == 2) {
+        planName = '12 Months';
+      }
+
       SnackbarUtil.showSuccess(
         title: 'Subscription',
         message: 'Successfully subscribed to $planName plan!',
